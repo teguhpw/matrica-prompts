@@ -1,1 +1,204 @@
+{
+  "name": "tpso",
+  "version": "1.2.0",
+  "description": "Archetype overlay untuk departemen TPSO (Technology/Products/Software/Operations). Menambah/menimpa hook tabel/visual dan urutan section untuk URS, SRS, SDD, UAT, Fit-Gap, CI/CD, Observability, dan Blueprint System.",
+  "extends": "core",
+  "merge_policy": {
+    "lists": "append",
+    "objects": "deep-override",
+    "notes": "Nilai pada overlay TPSO menimpa CORE jika kunci sama. Daftar di-append kecuali entri memiliki flag override=true."
+  },
+
+  "defaults": {
+    "standards_add": [
+      "IEEE 29148 (Requirements)",
+      "ISO/IEC 25010 (Quality Model)",
+      "ISO 42010 (Architecture)",
+      "OWASP ASVS (Security, opsional)"
+    ],
+    "caps": {
+      "TABLES_PER_SUBSECTION_MAX": 2,
+      "VISUALS_PER_SUBSECTION_MAX": 1
+    }
+  },
+
+  "doc_types": {
+    "URS":  { "code": "URS", "aliases": ["User Requirement Spec","User Requirements"] },
+    "SRS":  { "code": "SRS", "aliases": ["Software Requirement Spec","Requirements Spec"] },
+    "SDD":  { "code": "SDD", "aliases": ["Software Design Document","HLD","LLD"] },
+    "UAT":  { "code": "UAT", "aliases": ["User Acceptance Test Plan","UAT Plan"] },
+    "FIT_GAP": { "code": "FGM", "aliases": ["Fit-Gap","Fit Gap Matrix"] },
+    "CI_CD": { "code": "CICD", "aliases": ["CI/CD","Continuous Integration/Delivery"] },
+    "OBS":   { "code": "OBS", "aliases": ["Observability","SRE Telemetry"] },
+    "BLUEPRINT_SYSTEM": { "code": "BPS", "aliases": ["Blueprint","System Blueprint"] },
+    "USER_GUIDE": { "code": "UGD", "aliases": ["Panduan Pengguna","User Manual"] }
+  },
+
+  "archetype_map": {
+    "URS": [
+      "Pendahuluan",
+      "Ruang Lingkup",
+      "Profil Pengguna & Persona",
+      "Kebutuhan Fungsional (FR) — level pengguna",
+      "Kebutuhan Non-Fungsional (NFR) — tujuan mutu",
+      "Batasan & Asumsi",
+      "Risiko & Dampak",
+      "Lampiran"
+    ],
+    "SRS": [
+      "Pendahuluan",
+      "Ruang Lingkup & Konteks",
+      "Model Konteks & Antarmuka Eksternal",
+      "Kebutuhan Fungsional (FR) — level sistem",
+      "Kebutuhan Non-Fungsional (NFR) — ISO 25010",
+      "Data & Integrasi (High-Level)",
+      "Keamanan & Kepatuhan (UU PDP/ISO 27001)",
+      "Uji & RTM (High-Level)",
+      "Risiko",
+      "Lampiran"
+    ],
+    "SDD": [
+      "Pendahuluan",
+      "Prinsip Desain & Keputusan Arsitektur",
+      "Arsitektur Logis (Layered/Component)",
+      "Desain Antarmuka & Kontrak Layanan",
+      "Model Data (HL/LL sesuai kebutuhan)",
+      "Keandalan, Kinerja, Skalabilitas (NFR ke desain)",
+      "Keamanan Aplikasi (Threats, Controls)",
+      "Strategi Deploy & Konfigurasi",
+      "Lampiran"
+    ],
+    "UAT": [
+      "Ringkasan UAT",
+      "Ruang Lingkup & Out-of-Scope",
+      "Strategi & Kriteria Penerimaan",
+      "Skenario UAT (naratif)",
+      "Traceability ke FR (RTM Ringkas)",
+      "Rencana Eksekusi & Pelaporan",
+      "Risiko & Kontinjensi",
+      "Lampiran"
+    ],
+    "FIT_GAP": [
+      "Pendahuluan",
+      "Metodologi Fit-Gap",
+      "Matriks Fit-Gap per Proses/Kebutuhan",
+      "Rekomendasi: Konfigurasi vs Kustomisasi",
+      "Risiko, Dampak, & Estimasi",
+      "Lampiran"
+    ],
+    "CI_CD": [
+      "Pendahuluan",
+      "Arsitektur Pipeline (Build/Test/Package/Deploy)",
+      "Quality Gates & Coverage",
+      "Branching & Release Strategy",
+      "Security & Compliance in Pipeline",
+      "Monitoring & Rollback",
+      "Lampiran"
+    ],
+    "OBS": [
+      "Pendahuluan",
+      "Tujuan Observability & SLO/SLA",
+      "Metrik, Log, Tracing — Target & Sumber",
+      "Arsitektur Telemetri",
+      "Alerting & On-call",
+      "Keandalan: Error Budget & Review",
+      "Lampiran"
+    ],
+    "BLUEPRINT_SYSTEM": [
+      "Ringkasan",
+      "Context & Prinsip",
+      "Arsitektur Logis (Layered)",
+      "Integrasi High-Level",
+      "Data/Model High-Level",
+      "Non-Functional Requirements (NFR)",
+      "Keamanan & Privasi",
+      "Deployment & Observability",
+      "Roadmap (opsional)",
+      "Lampiran"
+    ],
+    "USER_GUIDE": [
+      "Pendahuluan",
+      "Akses & Peran",
+      "Navigasi & Setup",
+      "Fitur per Menu (Langkah & Contoh)",
+      "FAQ/Troubleshooting",
+      "Lampiran (Glosarium/Indeks)"
+    ]
+  },
+
+  "hooks": {
+    "URS": {
+      "tables": [
+        "Persona × Kebutuhan Kunci",
+        "Prioritas & Dampak (opsional)"
+      ],
+      "visuals": [
+        "Diagram Konteks (HL)"
+      ]
+    },
+    "SRS": {
+      "tables": [
+        "Component/Interface Matrix",
+        "Quality Attribute Scenarios (opsional)"
+      ],
+      "visuals": [
+        "Logical Layered Diagram"
+      ]
+    },
+    "SDD": {
+      "tables": [
+        "Komponen × Layer",
+        "Kontrak Layanan (opsional)"
+      ],
+      "visuals": [
+        "Component Diagram atau Sequence (pilih satu)"
+      ]
+    },
+    "UAT": {
+      "tables": [
+        "Scenario Sheet",
+        "RTM Ringkas (opsional)"
+      ],
+      "visuals": [
+        "Coverage Diagram"
+      ]
+    },
+    "FIT_GAP": {
+      "tables": [
+        "Fit-Gap Matrix",
+        "Rekomendasi & Estimasi (opsional)"
+      ],
+      "visuals": [
+        "Peta Proses (HL) atau Swimlane (pilih satu)"
+      ]
+    },
+    "CI_CD": {
+      "tables": [
+        "Quality Gates & Coverage",
+        "Artifacts Matrix (opsional)"
+      ],
+      "visuals": [
+        "Pipeline Architecture Diagram"
+      ]
+    },
+    "OBS": {
+      "tables": [
+        "Metrics/Logs/Tracing Map",
+        "Alert Policy (opsional)"
+      ],
+      "visuals": [
+        "Telemetry Architecture"
+      ]
+    },
+    "BLUEPRINT_SYSTEM": {
+      "tables": [
+        "Komponen × Layer",
+        "Interface Matrix (opsional)"
+      ],
+      "visuals": [
+        "Layered View atau Integration HL (pilih satu)"
+      ]
+    },
+    "USER_GUIDE": {
+      "
 
