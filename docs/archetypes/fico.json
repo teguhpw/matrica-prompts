@@ -1,1 +1,154 @@
+{
+  "name": "fico",
+  "version": "1.0.0",
+  "description": "Archetype overlay untuk departemen FICO (Finance & Controlling). Menambah/menimpa hook tabel/visual dan urutan section untuk O2C SOP, P2P SOP, Month-End Close, Revenue Recognition Policy, dan Tax Matrix.",
+  "extends": "core",
+  "merge_policy": {
+    "lists": "append",
+    "objects": "deep-override",
+    "notes": "Nilai overlay FICO menimpa CORE jika kunci sama. Daftar di-append kecuali entri memiliki flag override=true."
+  },
+
+  "defaults": {
+    "standards_add": [
+      "IFRS/PSAK (Revenue, Financial Instruments, Lease — sesuai relevansi)",
+      "COSO Internal Control (kontrol & evidence)",
+      "ISO 27001 (kontrol keamanan informasi atas data keuangan) — opsional",
+      "UU/Perpajakan lokal (PPN, PPh) & e-Faktur/e-Bupot — opsional"
+    ],
+    "caps": {
+      "TABLES_PER_SUBSECTION_MAX": 2,
+      "VISUALS_PER_SUBSECTION_MAX": 1
+    }
+  },
+
+  "doc_types": {
+    "O2C_SOP":        { "code": "O2C", "aliases": ["Order to Cash SOP","O2C"] },
+    "P2P_SOP":        { "code": "P2P", "aliases": ["Procure to Pay SOP","P2P"] },
+    "MONTH_END":      { "code": "MEC", "aliases": ["Month-End Close","Period-End Close","Closing Bulanan"] },
+    "REVREC_POLICY":  { "code": "RRP", "aliases": ["Revenue Recognition Policy","RevRec Policy"] },
+    "TAX":            { "code": "TAX", "aliases": ["Tax Matrix","Matriks Pajak"] }
+  },
+
+  "archetype_map": {
+    "O2C_SOP": [
+      "Pendahuluan & Ruang Lingkup",
+      "Master Data & Otorisasi",
+      "Alur Proses O2C (Order → Delivery → Invoice → Collection)",
+      "Pencatatan Akuntansi (Journal Posting)",
+      "Kontrol Kunci & Evidence (SoD/DoA)",
+      "Indikator Kinerja (DSO, Aging)",
+      "Pengecualian & Eskalasi",
+      "Lampiran (Template/Form/Checklist)"
+    ],
+    "P2P_SOP": [
+      "Pendahuluan & Ruang Lingkup",
+      "Master Data & Vendor Management",
+      "Alur Proses P2P (Requisition → PO → GR/IR → Invoice → Payment)",
+      "Pencatatan Akuntansi (GR/IR, AP)",
+      "Kontrol Kunci & Evidence (SoD/DoA)",
+      "Indikator Kinerja (Lead Time, On-time Payment)",
+      "Pengecualian & Eskalasi",
+      "Lampiran (Template/Form/Checklist)"
+    ],
+    "MONTH_END": [
+      "Pendahuluan",
+      "Kalender Tutup Buku (T+1 .. T+5)",
+      "Daftar Aktivitas & Checklist (per Hari/Unit)",
+      "Rekonsiliasi Subledger ↔ GL",
+      "Penyesuaian (Accrual/Deferral/Impairment, dsb.)",
+      "Kontrol & Evidence (Review/Approval)",
+      "Pelaporan & Analisis Varians",
+      "Lampiran (Template/Rekonsiliasi Contoh)"
+    ],
+    "REVREC_POLICY": [
+      "Pendahuluan & Cakupan",
+      "Kriteria Pengakuan (IFRS/PSAK) & Judgement",
+      "Skema & Skenario (Subscription, Project, License, Bundling)",
+      "Kebijakan Penentuan Harga/Alokasi (SSP, Variable Consideration)",
+      "Pencatatan & Contoh Jurnal",
+      "Monitoring, Disclosure & Audit Trail",
+      "Lampiran (Decision Tree/Matrix)"
+    ],
+    "TAX": [
+      "Pendahuluan",
+      "Jenis Pajak & Perlakuan (PPN, PPh, dll.)",
+      "Matriks Pajak (Produk/Jasa × Tarif/Threshold/Perlakuan)",
+      "Dokumentasi & Bukti Potong/Setor (e-Faktur/e-Bupot)",
+      "Kalender Kepatuhan & SLA",
+      "Kontrol & Rekonsiliasi",
+      "Lampiran (Referensi & Contoh Dokumen)"
+    ]
+  },
+
+  "hooks": {
+    "O2C_SOP": {
+      "tables": [
+        "RACI/SoD & DoA",
+        "Aging AR & KPI (opsional)"
+      ],
+      "visuals": [
+        "Swimlane Proses O2C (HL)"
+      ]
+    },
+    "P2P_SOP": {
+      "tables": [
+        "RACI/SoD & DoA",
+        "GR/IR Reconciliation (opsional)"
+      ],
+      "visuals": [
+        "Swimlane Proses P2P (HL)"
+      ]
+    },
+    "MONTH_END": {
+      "tables": [
+        "Kalender Tutup Buku (T+1..T+5)",
+        "Daftar Rekonsiliasi (opsional)"
+      ],
+      "visuals": [
+        "Timeline Close (HL)"
+      ]
+    },
+    "REVREC_POLICY": {
+      "tables": [
+        "Revenue Recognition Matrix (Skenario × Perlakuan)",
+        "SSP/Allocation Table (opsional)"
+      ],
+      "visuals": [
+        "Decision Tree RevRec"
+      ]
+    },
+    "TAX": {
+      "tables": [
+        "Produk/Jasa × Tarif/Perlakuan",
+        "Kalender Kepatuhan (opsional)"
+      ],
+      "visuals": [
+        "Alur e-Faktur/e-Bupot (HL)"
+      ]
+    }
+  },
+
+  "must_have_sections": {
+    "O2C_SOP": ["Kontrol Kunci & Evidence (SoD/DoA)", "Indikator Kinerja (DSO/Aging)"],
+    "P2P_SOP": ["Kontrol Kunci & Evidence (SoD/DoA)", "GR/IR & AP Controls"],
+    "MONTH_END": ["Kalender Tutup Buku", "Rekonsiliasi Subledger ↔ GL"],
+    "REVREC_POLICY": ["Revenue Recognition Matrix", "Contoh Jurnal & Disclosure"],
+    "TAX": ["Matriks Tarif/Perlakuan", "Kalender Kepatuhan"]
+  },
+
+  "policies": {
+    "enforce_caps": true,
+    "label_optional": "(opsional)",
+    "notes": [
+      "PX-Planner/Seed/PP-Pack wajib menegakkan batas ≤2 tabel & ≤1 visual per subbab.",
+      "Jika lebih, konten tambahan dipindah ke Lampiran atau dipecah menjadi subbab."
+    ]
+  },
+
+  "notes": [
+    "Overlay FICO menekankan kontrol internal (COSO), SoD/DoA, rekonsiliasi, dan kepatuhan.",
+    "Tambahkan kode di docs/registry/code-types.json & aturan di docseq-registry.json untuk konsistensi penomoran (O2C/P2P/MEC/RRP/TAX sudah disiapkan)."
+  ]
+}
 
