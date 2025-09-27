@@ -13,18 +13,18 @@
   },
 
   "patches": {
-    "std":  { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/std.json" },
-    "core": { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/core.json" },
-    "tpso": { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/tpso.json" },
-    "pdc":  { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/pdc.json" },
-    "ms":   { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/ms.json" },
-    "fico": { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/fico.json" }
+    "std":  { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patch/std.json" },
+    "core": { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patch/core.json" },
+    "tpso": { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patch/tpso.json" },
+    "pdc":  { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patch/pdc.json" },
+    "ms":   { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patch/ms.json" },
+    "fico": { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patch/fico.json" }
   },
 
   "registries": {
-    "code_types": { "ref": "1.1.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/registries/code-types.json" },
-    "docseq":     { "ref": "1.1.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/registries/docseq-registry.json" },
-    "prefixes":   { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/registries/prefixes.json" }
+    "code_types": { "ref": "1.1.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/registry/code-types.json" },
+    "docseq":     { "ref": "1.1.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/registry/docseq-registry.json" },
+    "prefixes":   { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/registry/prefixes.json" }
   },
 
   "templates": {
