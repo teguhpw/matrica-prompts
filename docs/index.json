@@ -1,1 +1,91 @@
+{
+  "version": "2025-09-27",
+  "min_px_seed": "2.0",
+  "resolver_name": "Matrica Prompts Resolver",
+
+  "archetypes": {
+    "core": {
+      "ref": "1.0.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/archetypes/core.json"
+    },
+    "tpso": {
+      "ref": "1.2.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/archetypes/tpso.json"
+    },
+    "pdc": {
+      "ref": "1.1.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/archetypes/pdc.json"
+    },
+    "ms": {
+      "ref": "1.0.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/archetypes/ms.json"
+    },
+    "fico": {
+      "ref": "1.3.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/archetypes/fico.json"
+    }
+  },
+
+  "patch": {
+    "std": {
+      "ref": "1.0.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/patch/std.json"
+    },
+    "core": {
+      "ref": "1.0.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/patch/core.json"
+    },
+    "tpso": {
+      "ref": "1.0.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/patch/tpso.json"
+    },
+    "pdc": {
+      "ref": "1.0.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/patch/pdc.json"
+    },
+    "ms": {
+      "ref": "1.0.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/patch/ms.json"
+    },
+    "fico": {
+      "ref": "1.0.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/patch/fico.json"
+    }
+  },
+
+  "registries": {
+    "code_types": {
+      "ref": "1.0.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/registry/code-types.json"
+    },
+    "docseq": {
+      "ref": "1.0.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/registry/docseq-registry.json"
+    },
+    "prefixes": {
+      "ref": "1.0.0",
+      "url": "https://teguhpw.github.io/matrica-prompts/registry/prefixes.json"
+    }
+  },
+
+  "templates": {
+    "md": {
+      "std_corp_002": "https://teguhpw.github.io/matrica-prompts/templates/std-corp-002.md"
+    },
+    "excel_templates": {
+      "px_planner_v2": {
+        "xlsx": "https://teguhpw.github.io/matrica-prompts/templates/excel/px-planner_v2_template.xlsx",
+        "sheets": "https://teguhpw.github.io/matrica-prompts/templates/excel/px-planner_v2_sheets.json",
+        "csv_dir": "https://teguhpw.github.io/matrica-prompts/templates/excel/px-planner_v2/",
+        "stylemap": "https://teguhpw.github.io/matrica-prompts/templates/excel/stylemaps/px-planner_v2_stylemap.json"
+      }
+    }
+  },
+
+  "notes": [
+    "Semua URL absolut agar dapat di-fetch langsung oleh prompt.",
+    "Jika salah satu resource tidak tersedia, PX-Planner akan memakai fallback bawaan.",
+    "Tambahkan entri baru (ref & url) saat ada versi archetype/patch terbaru."
+  ]
+}
 
