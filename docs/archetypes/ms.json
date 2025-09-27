@@ -1,1 +1,177 @@
+{
+  "name": "ms",
+  "version": "1.0.0",
+  "description": "Archetype overlay untuk departemen MS (Marketing & Sales). Menambah/menimpa hook tabel/visual dan urutan section untuk Sales Playbook, Pricing & Packaging, RFP Response, Proposal, Go-To-Market (GTM) Plan, dan Whitepaper.",
+  "extends": "core",
+  "merge_policy": {
+    "lists": "append",
+    "objects": "deep-override",
+    "notes": "Nilai overlay MS menimpa CORE jika kunci sama. Daftar di-append kecuali entri memiliki flag override=true."
+  },
+
+  "defaults": {
+    "standards_add": [
+      "B2B Solution Selling (best practice)",
+      "Value-Based Pricing (best practice)",
+      "Bid/Proposal Management (APMP) — opsional",
+      "Brand & Messaging Framework — opsional"
+    ],
+    "caps": {
+      "TABLES_PER_SUBSECTION_MAX": 2,
+      "VISUALS_PER_SUBSECTION_MAX": 1
+    }
+  },
+
+  "doc_types": {
+    "SALES_PLAYBOOK": { "code": "SPB", "aliases": ["Sales Playbook","Playbook Penjualan"] },
+    "PRICING":        { "code": "PRC", "aliases": ["Pricing & Packaging","Harga & Paket","Pricing Matrix"] },
+    "RFP_RESPONSE":   { "code": "RFP", "aliases": ["RFP Response","RFI Response","Tender Response"] },
+    "PROPOSAL":       { "code": "PRP", "aliases": ["Proposal","Commercial Proposal","Penawaran"] },
+    "GTM_PLAN":       { "code": "GTM", "aliases": ["Go-To-Market Plan","GTM","Peluncuran Produk"] },
+    "WHITEPAPER":     { "code": "WHP", "aliases": ["Whitepaper","White Paper"] }
+  },
+
+  "archetype_map": {
+    "SALES_PLAYBOOK": [
+      "Ringkasan & Positioning",
+      "ICP & Segmentasi",
+      "Pesan Inti & Differentiators",
+      "Use Case & Nilai Pelanggan",
+      "Proses Penjualan (Stage/Gate)",
+      "Taktik Aktivitas (Email/Call/Demo/POC)",
+      "Objection Handling & Battlecards",
+      "Collateral & Referensi",
+      "Lampiran"
+    ],
+    "PRICING": [
+      "Ringkasan & Prinsip Pricing",
+      "Struktur Paket (Tier/Bundel)",
+      "Matriks Fitur × Paket",
+      "SLA & Batasan (Limit/Quota)",
+      "Add-on & Diskon (Kebijakan)",
+      "TCO/ROI Quick Guide",
+      "Ketentuan Komersial (opsional)",
+      "Lampiran (Glosarium/Contoh Perhitungan)"
+    ],
+    "RFP_RESPONSE": [
+      "Ringkasan Eksekutif",
+      "Kesesuaian Persyaratan (Compliance Matrix)",
+      "Solusi yang Diusulkan",
+      "Metodologi & Rencana Implementasi",
+      "Pengalaman & Referensi",
+      "Komersial (opsional)",
+      "Lampiran (Dokumen Pendukung)"
+    ],
+    "PROPOSAL": [
+      "Ringkasan Eksekutif",
+      "Latar Belakang & Tujuan",
+      "Solusi & Cakupan",
+      "Manfaat & Nilai (ROI/TCO)",
+      "Rencana Implementasi & Timeline",
+      "Harga/Paket & Ketentuan",
+      "Risiko & Mitigasi (opsional)",
+      "Lampiran (Profil, Studi Kasus)"
+    ],
+    "GTM_PLAN": [
+      "Ringkasan & Sasaran",
+      "Segmentasi & ICP",
+      "Value Prop & Pesan Inti",
+      "Strategi Kanal & Aktivasi",
+      "Rencana Kampanye & Kalender",
+      "Funnel & KPI",
+      "Anggaran & Sumber Daya",
+      "Risiko & Kontinjensi",
+      "Lampiran"
+    ],
+    "WHITEPAPER": [
+      "Ringkasan Eksekutif",
+      "Masalah & Dampak",
+      "Pendekatan/Metodologi",
+      "Solusi & Arsitektur HL (opsional)",
+      "Studi Kasus/Contoh",
+      "Hasil & Rekomendasi",
+      "Lampiran (Istilah/Referensi)"
+    ]
+  },
+
+  "hooks": {
+    "SALES_PLAYBOOK": {
+      "tables": [
+        "ICP × Kriteria Segmen",
+        "Stage/Gate × Aktivitas (opsional)"
+      ],
+      "visuals": [
+        "Funnel Penjualan (HL) atau Customer Journey (pilih satu)"
+      ]
+    },
+    "PRICING": {
+      "tables": [
+        "Paket × Fitur",
+        "SLA & Batasan (opsional)"
+      ],
+      "visuals": [
+        "Bagan Paket/Tier (HL)"
+      ]
+    },
+    "RFP_RESPONSE": {
+      "tables": [
+        "Compliance Matrix",
+        "Risk & Mitigation (opsional)"
+      ],
+      "visuals": [
+        "Arsitektur/Alur Solusi (HL) atau Roadmap Implementasi (pilih satu)"
+      ]
+    },
+    "PROPOSAL": {
+      "tables": [
+        "Value Driver & KPI Target",
+        "Harga/Paket Ringkas (opsional)"
+      ],
+      "visuals": [
+        "Roadmap/Gantt Mini"
+      ]
+    },
+    "GTM_PLAN": {
+      "tables": [
+        "Kanal × Aktivitas",
+        "Anggaran × Kampanye (opsional)"
+      ],
+      "visuals": [
+        "Kalender Kampanye (HL) atau Funnel KPI (pilih satu)"
+      ]
+    },
+    "WHITEPAPER": {
+      "tables": [
+        "Ringkasan Data/Temuan",
+        "Perbandingan Pendekatan (opsional)"
+      ],
+      "visuals": [
+        "Diagram Konsep/Arsitektur HL (opsional; pilih satu)"
+      ]
+    }
+  },
+
+  "must_have_sections": {
+    "SALES_PLAYBOOK": ["ICP & Segmentasi", "Proses Penjualan (Stage/Gate)", "Objection Handling & Battlecards"],
+    "PRICING": ["Struktur Paket", "Matriks Fitur × Paket", "SLA & Batasan"],
+    "RFP_RESPONSE": ["Compliance Matrix", "Solusi yang Diusulkan"],
+    "PROPOSAL": ["Ringkasan Eksekutif", "Solusi & Cakupan", "Harga/Paket"],
+    "GTM_PLAN": ["Strategi Kanal & Aktivasi", "Funnel & KPI"],
+    "WHITEPAPER": ["Masalah & Dampak", "Pendekatan/Metodologi"]
+  },
+
+  "policies": {
+    "enforce_caps": true,
+    "label_optional": "(opsional)",
+    "notes": [
+      "PX-Planner/Seed/PP-Pack wajib menegakkan batas ≤2 tabel & ≤1 visual per subbab.",
+      "Jika lebih, konten tambahan dipindah ke Lampiran atau dipecah menjadi subbab."
+    ]
+  },
+
+  "notes": [
+    "Jika ingin nomor dokumen otomatis untuk GTM, tambahkan kode 'GTM' ke docs/registry/code-types.json dan rule ke docseq-registry.json.",
+    "Overlay MS menambah fokus komersial (nilai, funnel, paket), mengacu ke CORE untuk struktur umum."
+  ]
+}
 
