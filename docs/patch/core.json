@@ -1,1 +1,96 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "Patch umum teknis lintas departemen. Menambahkan kewajiban section teknis (NFR, Keamanan & Privasi), serta standar tambahan (ISO 27001/UU PDP, OWASP ASVS) bila relevan. Patch ini memperkuat CORE dan overlay teknis seperti TPSO tanpa mengubah batas global (caps) dari std.json.",
+  "merge_policy": {
+    "lists": "append",
+    "objects": "deep-override",
+    "notes": "Daftar akan di-append kecuali sebuah entri menyertakan flag override=true; objek di-merge secara deep dan nilai di patch ini menimpa jika kunci sama."
+  },
+  "rules": {
+    "standards_extra": [
+      "ISO/IEC 27001 (Information Security Management)",
+      "UU PDP (Perlindungan Data Pribadi) — jika memproses data pribadi",
+      "OWASP ASVS (Application Security Verification Standard) — untuk aplikasi web",
+      "ISO/IEC 27701 (Privacy Information Management) — opsional",
+      "NIST CSF (opsional, bila diperlukan kerangka kontrol tambahan)"
+    ],
+
+    "security_privacy_policies": {
+      "data_classification": true,
+      "privacy_by_design": true,
+      "logging_and_audit": true,
+      "secrets_management": true,
+      "vulnerability_management": true,
+      "notes": "Aktifkan kebijakan ini sebagai checklist/penilaian ringan pada bab keamanan & privasi jika relevan."
+    },
+
+    "must_have_sections": {
+      "TEKNIS_UMUM": [
+        "Kebutuhan Non-Fungsional (NFR)",
+        "Keamanan & Kepatuhan (UU PDP/ISO 27001)"
+      ],
+      "BLUEPRINT_SYSTEM": [
+        "Non-Functional Requirements (NFR)",
+        "Keamanan & Privasi"
+      ],
+      "SRS": [
+        "Kebutuhan Non-Fungsional (NFR) — ISO 25010",
+        "Keamanan & Kepatuhan (UU PDP/ISO 27001)",
+        "Uji & RTM (High-Level)"
+      ],
+      "SDD": [
+        "Keputusan Arsitektur",
+        "Keamanan Aplikasi (Threats & Controls)",
+        "Strategi Deploy & Konfigurasi"
+      ],
+      "UAT": [
+        "Kriteria Penerimaan",
+        "Traceability ke FR (RTM Ringkas)"
+      ],
+      "CI_CD": [
+        "Quality Gates",
+        "Security & Compliance in Pipeline"
+      ],
+      "OBS": [
+        "SLO/SLA",
+        "Alerting & On-call"
+      ]
+    },
+
+    "hooks_override": {
+      "SRS": {
+        "tables_append": [
+          "Security Requirements Summary (opsional)"
+        ],
+        "visuals_append": []
+      },
+      "SDD": {
+        "tables_append": [
+          "Threat Model / Attack Surface (opsional)"
+        ],
+        "visuals_append": [
+          "Deployment Topology (opsional; pilih jika belum ada)"
+        ]
+      },
+      "BLUEPRINT_SYSTEM": {
+        "tables_append": [
+          "Pemetaan Kontrol Keamanan (opsional)"
+        ],
+        "visuals_append": []
+      }
+    },
+
+    "controls_checklist": {
+      "nfr_quality_model": ["Performance", "Reliability", "Usability", "Security", "Maintainability", "Portability", "Compatibility"],
+      "security_controls_min": ["Access Control & RBAC", "Data at Rest/Transit Encryption", "Secrets Handling", "Audit Log & Retention", "Backup/Restore", "DR/BCP (ringkas)"],
+      "privacy_controls_min": ["Data Minimization", "Retention & Deletion", "Consent/Lawful Basis (jika berlaku)", "DPIA (opsional)"]
+    }
+  },
+  "notes": [
+    "Patch core tidak mengubah batas maksimum tabel/visual per subbab; itu sudah ditetapkan di docs/patch/std.json.",
+    "Jika overlay departemen (mis. TPSO) juga mendefinisikan section/Hook yang sama, urutan precedence: CORE archetype → overlay dept → patch.std/core/dept (yang terakhir menimpa).",
+    "Implementasi PX-Planner/Seed/PP-Pack harus menandai section 'must_have_sections' sebagai wajib hadir; jika outline dari archetype tidak menyertakannya, tambahkan secara otomatis dan catat di Pre-Flight."
+  ]
+}
 
