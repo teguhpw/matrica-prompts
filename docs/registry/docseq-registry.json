@@ -1,0 +1,110 @@
+{
+  "name": "docseq-registry",
+  "version": "1.0.0",
+  "description": "Registry pola penomoran dokumen. PX-Planner memakai ini untuk merender NOMOR DOKUMEN KANDIDAT (read-only). Counter tidak diubah oleh PX-Planner.",
+  "key_composition": {
+    "compose_key": "{DOC_CODE}-{UNIT}/{YYYY}/{MM}",
+    "notes": [
+      "Key di 'counters' disusun dari DOC_CODE, UNIT (dept/prefix), tahun (YYYY), dan bulan (MM) untuk reset bulanan.",
+      "Jika aturan reset = 'yearly', PX-Planner akan mengabaikan {MM} saat membaca/membentuk key."
+    ]
+  },
+  "rules": {
+    "default": {
+      "pattern": "{DOC_CODE}-{UNIT}-{YYYY}{MM}-{SEQ4}",
+      "reset": "monthly",
+      "seq_width": 4,
+      "padding": "0",
+      "notes": "Default untuk mayoritas dokumen departemen."
+    },
+    "CORP_STD": {
+      "match": { "scope": "CORP", "code": ["POL","STD","SOP","GDE","ESB"] },
+      "pattern": "{DOC_CODE}-CORP-{YYYY}{MM}-{SEQ3}",
+      "reset": "monthly",
+      "seq_width": 3,
+      "padding": "0"
+    },
+    "TPSO_ENG": {
+      "match": { "scope": "TPSO", "code": ["URS","SRS","SDD","UAT","FGM","BPS","UGD"] },
+      "pattern": "{DOC_CODE}-TPSO-{YYYY}{MM}-{SEQ4}",
+      "reset": "monthly",
+      "seq_width": 4,
+      "padding": "0"
+    },
+    "PDC_DELIVERY": {
+      "match": { "scope": "PDC", "code": ["SOW","RAID","CUT","STR","PJP"] },
+      "pattern": "{DOC_CODE}-PDC-{YYYY}{MM}-{SEQ4}",
+      "reset": "monthly",
+      "seq_width": 4,
+      "padding": "0"
+    },
+    "MS_COMMERCIAL": {
+      "match": { "scope": "MS", "code": ["SPB","PRC","PRP","RFP","WHP"] },
+      "pattern": "{DOC_CODE}-MS-{YYYY}{MM}-{SEQ3}",
+      "reset": "monthly",
+      "seq_width": 3,
+      "padding": "0"
+    },
+    "FICO_OPS": {
+      "match": { "scope": "FICO", "code": ["O2C","P2P","MEC","RRP","TAX"] },
+      "pattern": "{DOC_CODE}-FICO-{YYYY}{MM}-{SEQ4}",
+      "reset": "monthly",
+      "seq_width": 4,
+      "padding": "0"
+    }
+  },
+  "resolution_order": [
+    "CORP_STD",
+    "TPSO_ENG",
+    "PDC_DELIVERY",
+    "MS_COMMERCIAL",
+    "FICO_OPS",
+    "default"
+  ],
+  "placeholders": {
+    "DOC_CODE": "Kode dari docs/registry/code-types.json (field 'code')",
+    "UNIT": "Prefix unit/dept dari docs/registry/prefixes.json (mis. TPSO, PDC, MS, FICO, CORP)",
+    "YYYY": "Tahun 4 digit waktu generasi (zona Asia/Jakarta)",
+    "MM": "Bulan 2 digit waktu generasi (01..12)",
+    "SEQn": "Nomor urut lebar n digit (seq_width) sesuai aturan"
+  },
+  "counters": {
+    "POL-CORP/2025/09": 7,
+    "STD-CORP/2025/09": 12,
+    "SOP-CORP/2025/09": 4,
+
+    "SRS-TPSO/2025/09": 11,
+    "SDD-TPSO/2025/09": 3,
+    "UAT-TPSO/2025/09": 5,
+    "BPS-TPSO/2025/09": 2,
+
+    "SOW-PDC/2025/09": 8,
+    "RAID-PDC/2025/09": 6,
+
+    "PRC-MS/2025/09": 9,
+    "PRP-MS/2025/09": 2,
+
+    "O2C-FICO/2025/09": 4,
+    "MEC-FICO/2025/09": 10
+  },
+  "examples": [
+    {
+      "input": { "DOC_CODE": "SRS", "UNIT": "TPSO", "YYYY": "2025", "MM": "09" },
+      "rule_applied": "TPSO_ENG",
+      "current_counter": 11,
+      "candidate": "SRS-TPSO-202509-0012",
+      "notes": "PX-Planner hanya merender kandidat. Increment nyata dilakukan di proses terpisah (manual/layanan)."
+    },
+    {
+      "input": { "DOC_CODE": "PRC", "UNIT": "MS", "YYYY": "2025", "MM": "09" },
+      "rule_applied": "MS_COMMERCIAL",
+      "current_counter": 9,
+      "candidate": "PRC-MS-202509-010"
+    }
+  ],
+  "notes": [
+    "PX-Planner bersifat read-only terhadap registry ini. Tidak ada penulisan balik ke 'counters'.",
+    "Jika tidak ada rule spesifik yang cocok, gunakan 'rules.default'.",
+    "Resolver akan mengombinasikan ini dengan 'code-types.json' dan 'prefixes.json' untuk menentukan DOC_CODE dan UNIT."
+  ]
+}
