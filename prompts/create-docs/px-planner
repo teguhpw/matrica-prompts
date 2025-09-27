@@ -19,14 +19,16 @@ Dengan input minimal dari pengguna, susun rencana penulisan dokumen yang profesi
 "_defaults": {
   "resolver_url_primary": "https://teguhpw.github.io/matrica-prompts/index.json",
   "resolver_url_fallback": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/index.json",
-  "resolver_strategy": "PRIMARY_THEN_FALLBACK",  // opsi: PRIMARY_ONLY | FALLBACK_ONLY | PRIMARY_THEN_FALLBACK
+  "resolver_strategy": "PRIMARY_THEN_FALLBACK",
+  "i18n": { "bahasa_default": "id_ID", "timezone": "Asia/Jakarta", "date_format": "YYYY-MM-DD" },
+  "network": { "resolver_timeout_sec": 8, "retries": 1, "retry_backoff_sec": 2 },
 
   "archetype_keys_map": {
     "default": ["core"],
-    "TPSO":   ["core","tpso"],
-    "PDC":    ["core","pdc"],
-    "MS":     ["core","ms"],
-    "FICO":   ["core","fico"]
+    "TPSO": ["core","tpso"],
+    "PDC":  ["core","pdc"],
+    "MS":   ["core","ms"],
+    "FICO": ["core","fico"]
   },
 
   "patch_keys_default": ["std","core"],
@@ -52,14 +54,6 @@ Dengan input minimal dari pengguna, susun rencana penulisan dokumen yang profesi
     "regulator":[40,60],
     "end_user": [60,40],
     "campuran": [50,50]
-  },
-
-  "i18n": { "bahasa_default": "id_ID", "timezone": "Asia/Jakarta", "date_format": "YYYY-MM-DD" },
-
-  "network": {
-    "resolver_timeout_sec": 8,
-    "retries": 1,
-    "retry_backoff_sec": 2
   }
 }
 
