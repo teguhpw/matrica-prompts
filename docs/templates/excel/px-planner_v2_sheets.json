@@ -1,0 +1,105 @@
+{
+  "name": "px-planner_v2_sheets",
+  "version": "2.0.0",
+  "description": "Definisi deterministik untuk membangun Workbook Excel PX-Planner v2 (7 sheet). Prompt membangun XLSX berdasarkan urutan sheet dan header berikut.",
+  "sheets": [
+    {
+      "name": "00_Settings",
+      "columns": ["KEY", "VALUE", "NOTES"],
+      "column_notes": {
+        "KEY": "Nama parameter (PAGE_BUDGET_TOTAL, PACK_SOFT_CAP, PACK_HARD_CAP, ANNEX_MODE, LANGUAGE, VERSION, dst.)",
+        "VALUE": "Nilai parameter",
+        "NOTES": "Catatan tambahan"
+      }
+    },
+    {
+      "name": "01_Book_Registry",
+      "columns": ["BookID", "Judul", "Audiens", "Kedalaman", "PageBudget", "PacksTarget", "Status", "Ref_Primary", "Catatan"],
+      "column_notes": {
+        "BookID": "ID buku (B1, B2, ...)",
+        "Judul": "Judul buku",
+        "Audiens": "direksi|manajer|teknis|regulator|end_user|campuran",
+        "Kedalaman": "ringkas|hybrid|teknis",
+        "PageBudget": "Target halaman buku",
+        "PacksTarget": "Estimasi jumlah PACK",
+        "Status": "Draft|Planned|Approved|Released",
+        "Ref_Primary": "Standar/rujukan utama (opsional)",
+        "Catatan": "Catatan internal"
+      }
+    },
+    {
+      "name": "02_Domain_Registry",
+      "columns": ["DomainID", "Klaster", "Owner", "Maturity_Now", "Maturity_Target", "Prioritas", "Dependensi", "BookID_Target"],
+      "column_notes": {
+        "DomainID": "Kode domain (mis. D-ARCH, D-PROC)",
+        "Klaster": "Kelompok domain (Arsitektur, Integrasi, Proses, NFR, Keamanan, dsb.)",
+        "Owner": "Pemilik domain",
+        "Maturity_Now": "Skor kondisi saat ini",
+        "Maturity_Target": "Skor target",
+        "Prioritas": "Rendah|Sedang|Tinggi",
+        "Dependensi": "Daftar domain yang menjadi prasyarat",
+        "BookID_Target": "B1/B2/B3 destinasi konten domain"
+      }
+    },
+    {
+      "name": "03_Book_Outline_Seed",
+      "columns": ["No", "Bab/Subbab", "Outcome", "Tabel1", "Tabel2 (ops)", "Visual1", "RefKey", "Catatan"],
+      "column_notes": {
+        "No": "Urutan baris",
+        "Bab/Subbab": "Judul bab atau subbab",
+        "Outcome": "Hasil yang diharapkan dari subbab",
+        "Tabel1": "Nama tabel utama",
+        "Tabel2 (ops)": "Nama tabel kedua (opsional; wajib dilabeli '(opsional)')",
+        "Visual1": "Nama visual utama (maks. 1 per subbab)",
+        "RefKey": "Kunci referensi dari 07_Ref_Library",
+        "Catatan": "Catatan implementasi"
+      }
+    },
+    {
+      "name": "04_PXSeed_Input",
+      "columns": ["BookID", "jenis_dokumen", "audiens", "kedalaman", "mode_panjang", "bahasa", "topik_opsional", "PATCH_JSON"],
+      "column_notes": {
+        "BookID": "B1/B2/B3 ...",
+        "jenis_dokumen": "Jenis untuk buku ini (mis. SRS, Blueprint, Usulan Solusi)",
+        "audiens": "direksi|manajer|teknis|regulator|end_user|campuran",
+        "kedalaman": "ringkas|hybrid|teknis",
+        "mode_panjang": "MAX20|FLEXIBLE|SLIDE",
+        "bahasa": "id_ID (default)",
+        "topik_opsional": "Daftar topik yang ingin ditekankan",
+        "PATCH_JSON": "Pengaturan tambahan dalam JSON (caps/page_budget, dll.)"
+      }
+    },
+    {
+      "name": "05_Trace_Map",
+      "columns": ["RowRef", "Standard/BestPractice", "Pasal/Butir", "BookID", "Bab/Subbab", "RefKey"],
+      "column_notes": {
+        "RowRef": "Referensi internal ke baris outline (mis. B1-003)",
+        "Standard/BestPractice": "Nama standar atau best practice",
+        "Pasal/Butir": "Butir/pasal spesifik jika ada",
+        "BookID": "B1/B2/B3 ...",
+        "Bab/Subbab": "Lokasi outline",
+        "RefKey": "Kunci referensi di 07_Ref_Library"
+      }
+    },
+    {
+      "name": "07_Ref_Library",
+      "columns": ["RefKey", "Judul", "Edisi/Tahun", "Penerbit", "URN/Link", "KataKunci"],
+      "column_notes": {
+        "RefKey": "Kunci unik (mis. REF:ROI, REF:ISO29148)",
+        "Judul": "Judul referensi",
+        "Edisi/Tahun": "Tahun atau edisi",
+        "Penerbit": "Penerbit/organisasi",
+        "URN/Link": "Tautan/URN",
+        "KataKunci": "Kata kunci terkait"
+      }
+    }
+  ],
+  "build_policy": {
+    "strict_order": true,
+    "enforce_headers": true,
+    "notes": [
+      "Prompt harus membuat sheet mengikuti urutan 'sheets' di atas.",
+      "Nama kolom harus persis sama; jika template ini tidak dapat diakses, gunakan header embedded yang identik."
+    ]
+  }
+}
