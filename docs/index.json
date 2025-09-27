@@ -1,7 +1,8 @@
 {
   "version": "2025-09-27",
+  "resolver_name": "PX-Planner Resolver",
+  "min_px_planner": "2.1",
   "min_px_seed": "2.0",
-  "resolver_name": "Matrica Prompts Resolver",
 
   "archetypes": {
     "core": {
@@ -27,45 +28,18 @@
   },
 
   "patch": {
-    "std": {
-      "ref": "1.0.0",
-      "url": "https://teguhpw.github.io/matrica-prompts/patch/std.json"
-    },
-    "core": {
-      "ref": "1.0.0",
-      "url": "https://teguhpw.github.io/matrica-prompts/patch/core.json"
-    },
-    "tpso": {
-      "ref": "1.0.0",
-      "url": "https://teguhpw.github.io/matrica-prompts/patch/tpso.json"
-    },
-    "pdc": {
-      "ref": "1.0.0",
-      "url": "https://teguhpw.github.io/matrica-prompts/patch/pdc.json"
-    },
-    "ms": {
-      "ref": "1.0.0",
-      "url": "https://teguhpw.github.io/matrica-prompts/patch/ms.json"
-    },
-    "fico": {
-      "ref": "1.0.0",
-      "url": "https://teguhpw.github.io/matrica-prompts/patch/fico.json"
-    }
+    "std":  { "ref": "1.0.0", "url": "https://teguhpw.github.io/matrica-prompts/patch/std.json" },
+    "core": { "ref": "1.0.0", "url": "https://teguhpw.github.io/matrica-prompts/patch/core.json" },
+    "tpso": { "ref": "1.0.0", "url": "https://teguhpw.github.io/matrica-prompts/patch/tpso.json" },
+    "pdc":  { "ref": "1.0.0", "url": "https://teguhpw.github.io/matrica-prompts/patch/pdc.json" },
+    "ms":   { "ref": "1.0.0", "url": "https://teguhpw.github.io/matrica-prompts/patch/ms.json" },
+    "fico": { "ref": "1.0.0", "url": "https://teguhpw.github.io/matrica-prompts/patch/fico.json" }
   },
 
   "registries": {
-    "code_types": {
-      "ref": "1.0.0",
-      "url": "https://teguhpw.github.io/matrica-prompts/registry/code-types.json"
-    },
-    "docseq": {
-      "ref": "1.0.0",
-      "url": "https://teguhpw.github.io/matrica-prompts/registry/docseq-registry.json"
-    },
-    "prefixes": {
-      "ref": "1.0.0",
-      "url": "https://teguhpw.github.io/matrica-prompts/registry/prefixes.json"
-    }
+    "code_types": { "ref": "1.1.0", "url": "https://teguhpw.github.io/matrica-prompts/registry/code-types.json" },
+    "docseq":     { "ref": "1.1.0", "url": "https://teguhpw.github.io/matrica-prompts/registry/docseq-registry.json" },
+    "prefixes":   { "ref": "1.0.0", "url": "https://teguhpw.github.io/matrica-prompts/registry/prefixes.json" }
   },
 
   "templates": {
@@ -85,7 +59,6 @@
   "notes": [
     "Semua URL absolut agar dapat di-fetch langsung oleh prompt.",
     "Jika salah satu resource tidak tersedia, PX-Planner akan memakai fallback bawaan.",
-    "Tambahkan entri baru (ref & url) saat ada versi archetype/patch terbaru."
+    "Pastikan GitHub Pages diaktifkan (Source: /docs di branch main) agar path URL di atas valid."
   ]
 }
-
