@@ -1,1 +1,55 @@
+{
+  "name": "std",
+  "version": "1.0.0",
+  "description": "Patch global lintas dokumen: batas tabel/visual, label '(opsional)', lampiran minimum, dan kebijakan umum agar konsisten di seluruh departemen.",
+  "merge_policy": {
+    "lists": "append",
+    "objects": "deep-override",
+    "notes": "Nilai di patch menimpa archetype jika kuncinya sama; daftar akan di-append kecuali ada flag override=true pada entri."
+  },
+  "rules": {
+    "table_visual_caps": {
+      "TABLES_PER_SUBSECTION_MAX": 2,
+      "VISUALS_PER_SUBSECTION_MAX": 1,
+      "enforce_caps": true,
+      "second_table_label": "(opsional)"
+    },
+    "appendices_min": [
+      "Template & Contoh",
+      "Glosarium & Akronim"
+    ],
+    "doc_header_min": [
+      "Identitas Dokumen (Judul, Nomor, Versi, Tanggal)",
+      "Riwayat Perubahan",
+      "Pengesahan/Persetujuan",
+      "Daftar Isi"
+    ],
+    "defaults": {
+      "standards_extra": [
+        "Bahasa & Gaya Penulisan Konsisten",
+        "Sumber/Referensi Dicantumkan (bila ada)"
+      ],
+      "audience_ratio_override": null
+    },
+    "naming": {
+      "optional_marker": "(opsional)",
+      "table_prefix": "Tabel",
+      "figure_prefix": "Gambar"
+    },
+    "outline_policies": {
+      "SUBSECTION_MAX": 6,
+      "MIN_TOPICS_PER_SUBSECTION": 3,
+      "ANNEX_MODE": "ON"
+    },
+    "quality_gates": {
+      "require_outcome_per_subsection": true,
+      "require_refkey_if_cited": true
+    }
+  },
+  "notes": [
+    "Patch ini berlaku global; patch departemen (core/tpso/pdc/ms/fico) boleh menambah/menimpa.",
+    "Jika sebuah subbab memiliki >2 tabel, PX-Planner/Seed/PP-Pack harus memangkas atau memindahkan sisanya ke Lampiran.",
+    "Tabel kedua di subbab wajib diberi label '(opsional)'."
+  ]
+}
 
