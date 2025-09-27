@@ -1,1 +1,147 @@
+{
+  "name": "pdc",
+  "version": "1.0.0",
+  "description": "Patch PDC (Project Delivery/PMO): mempertegas kebutuhan RACI & Quality Gates serta meng-override hook SOW dan Cutover/Migration agar konsisten dan audit-ready.",
+  "merge_policy": {
+    "lists": "append",
+    "objects": "deep-override",
+    "notes": "Daftar di-append kecuali entri memiliki flag override=true; objek di-merge deep, nilai patch menimpa jika kunci sama."
+  },
+
+  "rules": {
+    "label_optional": "(opsional)",
+
+    "standards_extra": [
+      "PMBOK/PMI (Integrasi, Scope, Schedule, Cost, Quality, Resource, Communications, Risk, Procurement, Stakeholder)",
+      "PRINCE2 (Themes & Processes)",
+      "ITIL Change/Release (untuk aspek cutover/go-live)"
+    ],
+
+    "must_have_sections": {
+      "SOW": [
+        "Deliverables & Kriteria Penerimaan",
+        "RACI",
+        "Jadwal & Milestone (HL)"
+      ],
+      "CUTOVER": [
+        "Daftar Aktivitas Cutover",
+        "Rencana Backout/Rollback",
+        "Kriteria Go/No-Go"
+      ],
+      "PROJECT_PLAN": [
+        "Scope & WBS (HL)",
+        "Jadwal & Milestone",
+        "RACI"
+      ],
+      "STATUS_REPORT": [
+        "Status Triad (Scope/Schedule/Cost)",
+        "Risiko & Isu Kritis"
+      ]
+    },
+
+    "hooks_override": {
+      "SOW": {
+        "tables_prepend": [
+          "Daftar Deliverables"
+        ],
+        "tables_append": [
+          "RACI Ringkas (opsional)"
+        ],
+        "visuals_prepend": [
+          "Milestone Timeline (HL)"
+        ],
+        "visuals_append": []
+      },
+      "CUTOVER": {
+        "tables_prepend": [
+          "Checklist Aktivitas Cutover"
+        ],
+        "tables_append": [
+          "Rencana Backout & Kontinjensi (opsional)"
+        ],
+        "visuals_prepend": [
+          "Timeline Cutover (Slot/Wave)"
+        ],
+        "visuals_append": []
+      },
+      "STATUS_REPORT": {
+        "tables_prepend": [
+          "Status Triad (Scope/Schedule/Cost)"
+        ],
+        "tables_append": [
+          "Progress vs Baseline (opsional)"
+        ],
+        "visuals_prepend": [
+          "Dashboard Mini (HL)"
+        ],
+        "visuals_append": []
+      },
+      "PROJECT_PLAN": {
+        "tables_prepend": [
+          "WBS × Deliverables"
+        ],
+        "tables_append": [
+          "RACI (opsional)"
+        ],
+        "visuals_prepend": [
+          "Gantt HL"
+        ],
+        "visuals_append": []
+      }
+    },
+
+    "quality_gates": {
+      "SOW": [
+        "Deliverables terukur & kriteria penerimaan jelas",
+        "Peran & tanggung jawab terdokumentasi (RACI)",
+        "Milestone baseline disetujui"
+      ],
+      "CUTOVER": [
+        "Semua prasyarat dipenuhi & data freeze tervalidasi",
+        "Rencana rollback diuji di dry-run",
+        "Keputusan Go/No-Go terdokumentasi"
+      ],
+      "PROJECT_PLAN": [
+        "WBS lengkap level HL, dependency utama terpetakan",
+        "Jadwal baseline tersinkron dengan resource",
+        "Risiko utama memiliki mitigasi"
+      ],
+      "STATUS_REPORT": [
+        "Status triad konsisten dengan baseline",
+        "Isu kritis memiliki owner & due date",
+        "Perubahan/CR tercatat & dianalisis dampaknya"
+      ]
+    },
+
+    "checklists": {
+      "raci_min": [
+        "Sponsor",
+        "PM/PMO",
+        "Lead Teknis",
+        "QA/Tester",
+        "Bisnis/Owner",
+        "Operasi/Support"
+      ],
+      "cutover_min": [
+        "Inventaris aktivitas end-to-end",
+        "Jam senyap & blackout window",
+        "Rencana komunikasi multi-kanal",
+        "Checklist verifikasi pasca go-live"
+      ]
+    }
+  },
+
+  "policies": {
+    "enforce_caps": true,
+    "notes": [
+      "Batas global tetap mengacu ke docs/patch/std.json: ≤2 tabel & ≤1 visual per subbab.",
+      "Jika setelah override jumlah hook melebihi batas, implementasi harus memangkas otomatis dan memberi WARN di Pre-Flight."
+    ]
+  },
+
+  "notes": [
+    "Patch ini melengkapi overlay PDC (docs/archetypes/pdc.json) dengan penekanan kontrol eksekusi proyek.",
+    "Gunakan bersama Quality Gates untuk memastikan kesiapan baseline, go-live, dan pelaporan mingguan yang konsisten."
+  ]
+}
 
