@@ -1,47 +1,50 @@
 {
   "version": "2025-09-27",
+  "resolver_name": "PX-Planner Resolver",
+  "min_px_planner": "2.1",
   "min_px_seed": "2.0",
-  "resolver_name": "Matrica Prompts Resolver",
 
   "archetypes": {
-    "core": {
-      "ref": "1.0.0",
-      "url": "./archetypes/CORE.json"
-    },
-    "tpso": {
-      "ref": "1.2.0",
-      "url": "./archetypes/TPSO.json"
-    },
+    "core": { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/archetypes/core.json" },
+    "tpso": { "ref": "1.2.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/archetypes/tpso.json" },
+    "pdc":  { "ref": "1.1.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/archetypes/pdc.json" },
+    "ms":   { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/archetypes/ms.json" },
+    "fico": { "ref": "1.3.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/archetypes/fico.json" }
+  },
 
-    /* === Archetype baru untuk Odoo (tambahan v2.2) === */
-    "user_manual_odoo": {
-      "ref": "1.0.0",
-      "url": "./archetypes/USER_MANUAL_ODOO.json"
+  "patches": {
+    "std":  { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/std.json" },
+    "core": { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/core.json" },
+    "tpso": { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/tpso.json" },
+    "pdc":  { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/pdc.json" },
+    "ms":   { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/ms.json" },
+    "fico": { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/patches/fico.json" }
+  },
+
+  "registries": {
+    "code_types": { "ref": "1.1.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/registries/code-types.json" },
+    "docseq":     { "ref": "1.1.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/registries/docseq-registry.json" },
+    "prefixes":   { "ref": "1.0.0", "url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/registries/prefixes.json" }
+  },
+
+  "templates": {
+    "md": {
+      "std_corp_002": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/std-corp-002.md"
     },
-    "admin_guide_odoo": {
-      "ref": "1.0.0",
-      "url": "./archetypes/ADMIN_GUIDE_ODOO.json"
-    },
-    "trn_pack_odoo": {
-      "ref": "1.0.0",
-      "url": "./archetypes/TRN_PACK_ODOO.json"
+    "excel_templates": {
+      "px_planner_v2": {
+        "xlsx": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/excel/px-planner_v2_template.xlsx",
+        "sheets": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/excel/px-planner_v2_sheets.json",
+        "csv_dir": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/excel/px-planner_v2/",
+        "stylemap": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/excel/stylemaps/px-planner_v2_stylemap.json"
+      }
     }
   },
 
-  /* === Konfigurasi yang bisa berubah di repo (v2.2) === */
-  "commands": {
-    "global_flags": "./commands/global.flags.json",
-    "odoo_manual_flags": "./commands/odoo_manual.flags.json"
-  },
-
-  /* === Mapping deteksi otomatis === */
-  "mappings": {
-    "dept_map": "./mappings/dept_map.json",
-    "odoo_views_map": "./mappings/odoo_views_map.json"
-  },
-
-  /* === Patch pasca-merge (opsional, bisa ditambah list baru) === */
-  "patches": [
-    "./patches/2025-09-fixes.json"
+  "notes": [
+    "Semua URL absolut ke RAW agar dapat di-fetch langsung oleh prompt.",
+    "Jika salah satu resource tidak tersedia, PX-Planner/Seed akan memakai fallback embedded.",
+    "GitHub Pages tidak diwajibkan jika memakai RAW.",
+    "Tambahkan checksum opsional di masa depan bila ingin verifikasi integritas (sha256)."
   ]
 }
