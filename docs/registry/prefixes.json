@@ -1,0 +1,116 @@
+{
+  "name": "prefixes",
+  "version": "1.0.0",
+  "description": "Registry prefix UNIT/DEPT/Produk untuk membentuk pattern nomor dokumen. Dipakai bersama code-types.json & docseq-registry.json.",
+  "units": {
+    "CORP": {
+      "type": "department",
+      "aliases": ["Corporate", "Korporat", "Kantor Pusat"],
+      "enabled": true
+    },
+    "TPSO": {
+      "type": "department",
+      "aliases": ["Tech", "Engineering", "Produk", "TI Operasional"],
+      "enabled": true
+    },
+    "PDC": {
+      "type": "department",
+      "aliases": ["PMO", "Delivery", "Project Delivery"],
+      "enabled": true
+    },
+    "MS": {
+      "type": "department",
+      "aliases": ["Marketing", "Sales", "Commercial"],
+      "enabled": true
+    },
+    "FICO": {
+      "type": "department",
+      "aliases": ["Finance", "Accounting", "Keuangan", "Controlling"],
+      "enabled": true
+    },
+
+    "HR": {
+      "type": "department",
+      "aliases": ["Human Resources", "SDM"],
+      "enabled": false
+    },
+    "LEG": {
+      "type": "department",
+      "aliases": ["Legal", "Hukum"],
+      "enabled": false
+    },
+    "IT": {
+      "type": "department",
+      "aliases": ["Information Technology", "Infrastruktur TI"],
+      "enabled": false
+    },
+    "QA": {
+      "type": "department",
+      "aliases": ["Quality Assurance", "Mutu"],
+      "enabled": false
+    }
+  },
+
+  "products": {
+    "HARM": { "name": "Harmony", "aliases": ["Harmony HIS", "Harmony-ERP"], "enabled": true },
+    "MTRX": { "name": "Matrix-ERP", "aliases": ["Matrix ERP", "M-ERP"], "enabled": true },
+    "MOBI": { "name": "Matrica Mobile", "aliases": ["Mobile App"], "enabled": true },
+    "ANLT": { "name": "Analytics Suite", "aliases": ["Analytics", "BI"], "enabled": true }
+  },
+
+  "project_codes": {
+    "PRJ01": { "name": "Transformasi RS A", "enabled": true },
+    "PRJ02": { "name": "Implementasi ERP Pabrik A", "enabled": true }
+  },
+
+  "resolution": {
+    "priority": [
+      "units",
+      "products",
+      "project_codes"
+    ],
+    "notes": [
+      "PX-Planner memilih UNIT dari 'units' berdasarkan 'scope/default_dept' (code-types.json) dan/atau deteksi 'jenis_dokumen'.",
+      "Jika konteks menyebut produk spesifik (mis. Harmony), Planner boleh menambahkan kode produk ke catatan atau judul, tetapi placeholder {UNIT} tetap memakai kode departemen (TPSO/PDC/MS/FICO/CORP) kecuali diatur lain.",
+      "Jika ingin {UNIT} menggunakan KODE PRODUK/PROYEK (bukan departemen), nyalakan opsi di PATCH_JSON pada 04_PXSeed_Input (mis. { \"unit_source\": \"product\" })."
+    ]
+  },
+
+  "validation": {
+    "unit_regex": "^[A-Z0-9]{3,6}$",
+    "product_regex": "^[A-Z0-9]{3,6}$",
+    "project_regex": "^[A-Z0-9]{4,8}$",
+    "notes": [
+      "Semua prefix huruf besar, tanpa spasi.",
+      "Aktif/nonaktif dapat diatur via field 'enabled'. PX-Planner mengabaikan prefix yang tidak aktif."
+    ]
+  },
+
+  "examples": [
+    {
+      "case": "Default departemen",
+      "DOC_CODE": "SRS",
+      "UNIT": "TPSO",
+      "pattern_ref": "docseq-registry.rules.TPSO_ENG"
+    },
+    {
+      "case": "Dokumen korporat",
+      "DOC_CODE": "POL",
+      "UNIT": "CORP",
+      "pattern_ref": "docseq-registry.rules.CORP_GCG"
+    },
+    {
+      "case": "Menandai produk di judul (bukan {UNIT})",
+      "DOC_CODE": "BPS",
+      "UNIT": "TPSO",
+      "product_hint": "HARM",
+      "note": "UNIT tetap TPSO; produk disebutkan pada judul/metadata."
+    }
+  ],
+
+  "notes": [
+    "Tambahkan unit/produk/proyek baru sesuai kebutuhan. Pastikan konsisten dengan kebijakan penomoran pada docseq-registry.json.",
+    "Jika suatu unit/produk tidak dipakai lagi, set 'enabled' ke false agar tidak dipilih Planner.",
+    "Untuk organisasi kecil, cukup gunakan daftar 'units' di atas (CORP/TPSO/PDC/MS/FICO)."
+  ]
+}
