@@ -1,1 +1,161 @@
+{
+  "name": "pdc",
+  "version": "1.1.0",
+  "description": "Archetype overlay untuk departemen PDC (Project Delivery/PMO). Menambah/menimpa hook tabel/visual dan urutan section untuk SOW, RAID Register, Cutover/Migration Plan, Status Report, dan Project Plan.",
+  "extends": "core",
+  "merge_policy": {
+    "lists": "append",
+    "objects": "deep-override",
+    "notes": "Nilai overlay PDC menimpa CORE jika kunci sama. Daftar di-append kecuali entri memiliki flag override=true."
+  },
+
+  "defaults": {
+    "standards_add": [
+      "PMBOK/PMI (Scope, Schedule, Cost, Risk, Quality, Resource, Communications, Procurement, Stakeholder)",
+      "PRINCE2 (Themes & Processes)",
+      "ISO 27001 (Risk, jika relevan dengan keamanan informasi)",
+      "ITIL Change/Release (opsional, bila terkait cutover)"
+    ],
+    "caps": {
+      "TABLES_PER_SUBSECTION_MAX": 2,
+      "VISUALS_PER_SUBSECTION_MAX": 1
+    }
+  },
+
+  "doc_types": {
+    "SOW":  { "code": "SOW",  "aliases": ["Statement of Work"] },
+    "RAID": { "code": "RAID", "aliases": ["RAID Register","Risk Assumption Issue Dependency"] },
+    "CUTOVER": { "code": "CUT", "aliases": ["Cutover Plan","Migration Plan","Go-Live Plan"] },
+    "STATUS_REPORT": { "code": "STR", "aliases": ["Project Status Report","Progress Report"] },
+    "PROJECT_PLAN": { "code": "PJP", "aliases": ["Project Plan","Workplan","Schedule Plan"] }
+  },
+
+  "archetype_map": {
+    "SOW": [
+      "Ringkasan & Latar Belakang",
+      "Tujuan & Cakupan",
+      "Deliverables & Kriteria Penerimaan",
+      "Peran & Tanggung Jawab (RACI)",
+      "Asumsi & Batasan",
+      "Jadwal & Milestone (HL)",
+      "Komersial & Ketentuan (opsional)",
+      "Risiko Utama & Mitigasi",
+      "Lampiran (Spesifikasi/Referensi)"
+    ],
+    "RAID": [
+      "Pendahuluan",
+      "Metodologi dan Skala Dampak",
+      "Risk Register",
+      "Assumption Register",
+      "Issue Register",
+      "Dependency Register",
+      "Analisis & Mitigasi/Respons",
+      "Pemantauan & Eskalasi",
+      "Lampiran"
+    ],
+    "CUTOVER": [
+      "Pendahuluan & Strategi Go-Live",
+      "Lingkup & Lingkungan Terdampak",
+      "Daftar Aktivitas Cutover",
+      "Prasyarat & Data Freeze",
+      "Rencana Backout/Rollback",
+      "Komunikasi & RACI",
+      "Jadwal Detail (Wave/Slot)",
+      "Kriteria Kesiapan (Go/No-Go)",
+      "Lampiran (Checklist, Script)"
+    ],
+    "STATUS_REPORT": [
+      "Ringkasan Eksekutif",
+      "Status Triad (Scope/Schedule/Cost)",
+      "Progress vs Baseline",
+      "Risiko & Isu Kritis",
+      "Perubahan (CR) & Dampak",
+      "Rencana Minggu Depan",
+      "Permintaan Keputusan/Support",
+      "Lampiran (Dashboard, Metrics)"
+    ],
+    "PROJECT_PLAN": [
+      "Pendahuluan",
+      "Scope & WBS (HL)",
+      "Jadwal (Gantt) & Milestone",
+      "RACI & Organisasi Proyek",
+      "Rencana Komunikasi",
+      "Manajemen Risiko & Isu",
+      "Quality Plan & Acceptance",
+      "Procurement & Vendor (opsional)",
+      "Lampiran (Baseline/Estimasi)"
+    ]
+  },
+
+  "hooks": {
+    "SOW": {
+      "tables": [
+        "Daftar Deliverables",
+        "RACI Ringkas (opsional)"
+      ],
+      "visuals": [
+        "Milestone Timeline (HL)"
+      ]
+    },
+    "RAID": {
+      "tables": [
+        "Risk Register (ID, Deskripsi, Dampak, Probabilitas, Skor, Mitigasi, Owner, Due Date)",
+        "Issue Register (opsional)"
+      ],
+      "visuals": [
+        "Heatmap Risiko (HL) atau Trend Risiko (pilih satu)"
+      ]
+    },
+    "CUTOVER": {
+      "tables": [
+        "Checklist Aktivitas Cutover",
+        "Rencana Backout & Kontinjensi (opsional)"
+      ],
+      "visuals": [
+        "Timeline Cutover (Slot/Wave)"
+      ]
+    },
+    "STATUS_REPORT": {
+      "tables": [
+        "Status Triad (Scope/Schedule/Cost)",
+        "Progress vs Baseline (opsional)"
+      ],
+      "visuals": [
+        "Dashboard Mini (HL)"
+      ]
+    },
+    "PROJECT_PLAN": {
+      "tables": [
+        "WBS × Deliverables",
+        "RACI (opsional)"
+      ],
+      "visuals": [
+        "Gantt HL"
+      ]
+    }
+  },
+
+  "must_have_sections": {
+    "SOW": ["Deliverables & Kriteria Penerimaan", "RACI", "Jadwal & Milestone (HL)"],
+    "RAID": ["Risk Register", "Issue Register atau Catatan Eskalasi"],
+    "CUTOVER": ["Daftar Aktivitas Cutover", "Rencana Backout/Rollback", "Kriteria Go/No-Go"],
+    "STATUS_REPORT": ["Status Triad (Scope/Schedule/Cost)", "Risiko & Isu Kritis"],
+    "PROJECT_PLAN": ["Scope & WBS (HL)", "Jadwal & Milestone", "RACI"]
+  },
+
+  "policies": {
+    "enforce_caps": true,
+    "label_optional": "(opsional)",
+    "notes": [
+      "PX-Planner/Seed/PP-Pack wajib menegakkan batas ≤2 tabel & ≤1 visual per subbab.",
+      "Jika lebih, konten tambahan dipindah ke Lampiran atau dipecah menjadi subbab."
+    ]
+  },
+
+  "notes": [
+    "Overlay PDC memfokuskan manajemen proyek dan go-live readiness.",
+    "Gunakan overlay TPSO untuk dokumen engineering (URS/SRS/SDD/UAT) dan MS/FICO untuk ranah komersial/keuangan.",
+    "Urutan section PDC dapat menimpa CORE untuk menjaga konsistensi pelaporan proyek."
+  ]
+}
 
