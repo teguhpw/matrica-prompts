@@ -1,1 +1,156 @@
+{
+  "name": "ms",
+  "version": "1.0.0",
+  "description": "Patch MS (Marketing & Sales): menajamkan CTA, Proof/Testimonials, serta meng-override hook untuk Pricing & Sales Playbook agar konsisten, ringkas, dan siap eksekusi komersial.",
+  "merge_policy": {
+    "lists": "append",
+    "objects": "deep-override",
+    "notes": "Daftar di-append kecuali entri memiliki flag override=true; objek di-merge deep, nilai patch ini menimpa jika kunci sama."
+  },
+
+  "rules": {
+    "label_optional": "(opsional)",
+
+    "standards_extra": [
+      "Value-Based Selling (best practice)",
+      "Category & Messaging Framework (opsional)",
+      "APMP Bid/Proposal Management (opsional)"
+    ],
+
+    "must_have_sections": {
+      "PRICING": [
+        "Struktur Paket (Tier/Bundel)",
+        "Matriks Fitur × Paket",
+        "SLA & Batasan"
+      ],
+      "SALES_PLAYBOOK": [
+        "ICP & Segmentasi",
+        "Proses Penjualan (Stage/Gate)",
+        "Objection Handling & Battlecards"
+      ],
+      "PROPOSAL": [
+        "Ringkasan Eksekutif",
+        "Solusi & Cakupan",
+        "Harga/Paket"
+      ],
+      "RFP_RESPONSE": [
+        "Compliance Matrix",
+        "Solusi yang Diusulkan"
+      ],
+      "GTM_PLAN": [
+        "Strategi Kanal & Aktivasi",
+        "Funnel & KPI"
+      ],
+      "WHITEPAPER": [
+        "Masalah & Dampak",
+        "Pendekatan/Metodologi"
+      ]
+    },
+
+    "hooks_override": {
+      "PRICING": {
+        "tables_prepend": [
+          "Paket × Fitur"
+        ],
+        "tables_append": [
+          "SLA & Batasan (opsional)",
+          "Add-on & Diskon (opsional)"
+        ],
+        "visuals_prepend": [
+          "Bagan Paket/Tier (HL)"
+        ],
+        "visuals_append": []
+      },
+      "SALES_PLAYBOOK": {
+        "tables_prepend": [
+          "ICP × Kriteria Segmen"
+        ],
+        "tables_append": [
+          "Stage/Gate × Aktivitas (opsional)",
+          "Proof Library (opsional: studi kasus/testimoni ringkas)"
+        ],
+        "visuals_prepend": [
+          "Funnel Penjualan (HL) atau Customer Journey (pilih satu)"
+        ],
+        "visuals_append": []
+      },
+      "PROPOSAL": {
+        "tables_append": [
+          "Value Driver & KPI Target (opsional)",
+          "Harga/Paket Ringkas (opsional)"
+        ],
+        "visuals_prepend": [
+          "Roadmap/Gantt Mini"
+        ],
+        "visuals_append": []
+      },
+      "RFP_RESPONSE": {
+        "tables_prepend": [
+          "Compliance Matrix"
+        ],
+        "tables_append": [
+          "Risk & Mitigation (opsional)"
+        ],
+        "visuals_prepend": [
+          "Arsitektur/Alur Solusi (HL) atau Roadmap Implementasi (pilih satu)"
+        ],
+        "visuals_append": []
+      },
+      "GTM_PLAN": {
+        "tables_prepend": [
+          "Kanal × Aktivitas"
+        ],
+        "tables_append": [
+          "Anggaran × Kampanye (opsional)"
+        ],
+        "visuals_prepend": [
+          "Kalender Kampanye (HL) atau Funnel KPI (pilih satu)"
+        ],
+        "visuals_append": []
+      },
+      "WHITEPAPER": {
+        "tables_append": [
+          "Ringkasan Data/Temuan (opsional)",
+          "Perbandingan Pendekatan (opsional)"
+        ],
+        "visuals_append": [
+          "Diagram Konsep/Arsitektur HL (opsional; pilih satu)"
+        ]
+      }
+    },
+
+    "cta_block": {
+      "enabled": true,
+      "where": ["PROPOSAL", "RFP_RESPONSE", "SALES_PLAYBOOK", "GTM_PLAN", "WHITEPAPER"],
+      "layout": [
+        "Ajakan Tindak (CTA) jelas (Demo/POC/Workshop/Trial)",
+        "Kontak & SLA Respons",
+        "Daftar Lampiran/Collateral yang relevan"
+      ]
+    },
+
+    "proof_block": {
+      "enabled": true,
+      "content": [
+        "Ringkasan Studi Kasus (masalah→solusi→hasil)",
+        "Testimoni/Referensi Klien (opsional, terverifikasi)",
+        "Sertifikasi/Compliance (opsional)"
+      ],
+      "notes": "Jika tidak ada data riil, isi placeholder dan tandai sebagai (opsional)."
+    }
+  },
+
+  "policies": {
+    "enforce_caps": true,
+    "notes": [
+      "Batas global tetap mengacu ke docs/patch/std.json: ≤2 tabel & ≤1 visual per subbab.",
+      "Jika setelah override jumlah hook melebihi batas, implementasi harus memangkas otomatis dan memberi WARN di Pre-Flight."
+    ]
+  },
+
+  "notes": [
+    "Patch ini melengkapi overlay MS (docs/archetypes/ms.json) untuk kebutuhan komersial yang konsisten.",
+    "Pastikan kode komersial (SPB/PRC/PRP/RFP/WHP) tersedia di docs/registry/code-types.json dan aturan penomorannya di docseq-registry.json."
+  ]
+}
 
