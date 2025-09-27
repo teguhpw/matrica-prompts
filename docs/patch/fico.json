@@ -1,1 +1,145 @@
+{
+  "name": "fico",
+  "version": "1.0.0",
+  "description": "Patch khusus FICO: menajamkan kontrol & evidence (COSO), kepatuhan IFRS/PSAK, dan pemisahan tugas/otorisasi (SoD/DoA). Melengkapi overlay docs/archetypes/fico.json dengan penekanan tabel/visual dan section wajib.",
+  "merge_policy": {
+    "lists": "append",
+    "objects": "deep-override",
+    "notes": "Daftar di-append kecuali sebuah entri menyertakan flag override=true; objek di-merge secara deep, nilai patch ini menimpa jika kunci sama."
+  },
+
+  "rules": {
+    "label_optional": "(opsional)",
+
+    "standards_extra": [
+      "IFRS/PSAK (Revenue, Financial Instruments, Lease — sesuai relevansi)",
+      "COSO Internal Control — prinsip kontrol & evidence",
+      "ISO/IEC 27001 (keamanan informasi finansial) — opsional",
+      "Perpajakan lokal (PPN/PPh, e-Faktur/e-Bupot) — opsional"
+    ],
+
+    "must_have_sections": {
+      "O2C_SOP": [
+        "Kontrol Kunci & Evidence (SoD/DoA)",
+        "Indikator Kinerja (DSO/Aging)"
+      ],
+      "P2P_SOP": [
+        "Kontrol Kunci & Evidence (SoD/DoA)",
+        "GR/IR & AP Controls"
+      ],
+      "MONTH_END": [
+        "Kalender Tutup Buku (T+1..T+5)",
+        "Rekonsiliasi Subledger ↔ GL",
+        "Kontrol & Evidence (Review/Approval)"
+      ],
+      "REVREC_POLICY": [
+        "Revenue Recognition Matrix (Skenario × Perlakuan)",
+        "Contoh Jurnal & Disclosure"
+      ],
+      "TAX": [
+        "Matriks Tarif/Perlakuan",
+        "Kalender Kepatuhan"
+      ]
+    },
+
+    "hooks_override": {
+      "O2C_SOP": {
+        "tables_prepend": [
+          "RACI/SoD & DoA"
+        ],
+        "tables_append": [
+          "Aging AR & KPI (opsional)"
+        ],
+        "visuals_prepend": [
+          "Swimlane Proses O2C (HL)"
+        ]
+      },
+      "P2P_SOP": {
+        "tables_prepend": [
+          "RACI/SoD & DoA"
+        ],
+        "tables_append": [
+          "GR/IR Reconciliation (opsional)"
+        ],
+        "visuals_prepend": [
+          "Swimlane Proses P2P (HL)"
+        ]
+      },
+      "MONTH_END": {
+        "tables_prepend": [
+          "Kalender Tutup Buku (T+1..T+5)"
+        ],
+        "tables_append": [
+          "Daftar Rekonsiliasi (opsional)"
+        ],
+        "visuals_prepend": [
+          "Timeline Close (HL)"
+        ]
+      },
+      "REVREC_POLICY": {
+        "tables_prepend": [
+          "Revenue Recognition Matrix (Skenario × Perlakuan)"
+        ],
+        "tables_append": [
+          "SSP/Allocation Table (opsional)"
+        ],
+        "visuals_prepend": [
+          "Decision Tree RevRec"
+        ]
+      },
+      "TAX": {
+        "tables_prepend": [
+          "Produk/Jasa × Tarif/Perlakuan"
+        ],
+        "tables_append": [
+          "Kalender Kepatuhan (opsional)"
+        ],
+        "visuals_prepend": [
+          "Alur e-Faktur/e-Bupot (HL)"
+        ]
+      }
+    },
+
+    "controls_checklist_add": {
+      "sod_doa_min": [
+        "Pemisahan fungsi inisiasi, otorisasi, eksekusi, rekonsiliasi",
+        "Delegation of Authority terdokumentasi & diuji",
+        "Dual control untuk transaksi material"
+      ],
+      "evidence_min": [
+        "Jejak audit (timestamp, user, sumber data)",
+        "Retensi bukti sesuai kebijakan",
+        "Sampling/verification berkala"
+      ],
+      "financial_close_min": [
+        "Cutoff & accrual/deferral yang tepat",
+        "Rekonsiliasi GL-subledger selesai sebelum T+5",
+        "Review & approval berjenjang"
+      ],
+      "revrec_min": [
+        "Identifikasi kontrak & kewajiban pelaksanaan",
+        "Penentuan harga transaksi & alokasi (SSP)",
+        "Timing pengakuan (point-in-time vs over-time)"
+      ],
+      "tax_min": [
+        "Validasi klasifikasi pajak per item",
+        "Dokumentasi e-Faktur/e-Bupot lengkap",
+        "Rekonsiliasi pajak keluaran-masukan"
+      ]
+    }
+  },
+
+  "policies": {
+    "enforce_caps": true,
+    "notes": [
+      "Batas global tetap mengacu ke docs/patch/std.json: ≤2 tabel & ≤1 visual per subbab.",
+      "Jika setelah override jumlah hook melebihi batas, implementasi harus memangkas otomatis dan memberi WARN di Pre-Flight."
+    ]
+  },
+
+  "notes": [
+    "Patch ini mempertebal aspek kontrol & kepatuhan tanpa mengubah struktur besar archetype FICO.",
+    "Pastikan kode-kode FICO (O2C/P2P/MEC/RRP/TAX) sudah ada di docs/registry/code-types.json & aturan penomoran di docseq-registry.json."
+  ]
+}
 
