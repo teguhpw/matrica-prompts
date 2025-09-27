@@ -15,44 +15,51 @@ Dengan input minimal dari pengguna, susun rencana penulisan dokumen yang profesi
 # PARAMETER INTERNAL (JANGAN ditanyakan ke user)
 {
   "_version": "PX-Planner v2.1",
-  "_defaults": {
-    "resolver_url": "https://teguhpw.github.io/matrica-prompts/index.json",
+ 
+"_defaults": {
+  "resolver_url_primary": "https://teguhpw.github.io/matrica-prompts/index.json",
+  "resolver_url_fallback": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/index.json",
+  "resolver_strategy": "PRIMARY_THEN_FALLBACK",  // opsi: PRIMARY_ONLY | FALLBACK_ONLY | PRIMARY_THEN_FALLBACK
 
-    "archetype_keys_map": {
-      "default": ["core"],
-      "TPSO":   ["core","tpso"],
-      "PDC":    ["core","pdc"],
-      "MS":     ["core","ms"],
-      "FICO":   ["core","fico"]
-    },
+  "archetype_keys_map": {
+    "default": ["core"],
+    "TPSO":   ["core","tpso"],
+    "PDC":    ["core","pdc"],
+    "MS":     ["core","ms"],
+    "FICO":   ["core","fico"]
+  },
 
-    "patch_keys_default": ["std","core"],
-    "patch_keys_map": {
-      "TPSO": ["std","core","tpso"],
-      "PDC":  ["std","core","pdc"],
-      "MS":   ["std","core","ms"],
-      "FICO": ["std","core","fico"]
-    },
+  "patch_keys_default": ["std","core"],
+  "patch_keys_map": {
+    "TPSO": ["std","core","tpso"],
+    "PDC":  ["std","core","pdc"],
+    "MS":   ["std","core","ms"],
+    "FICO": ["std","core","fico"]
+  },
 
-    "caps": {
-      "TABLES_PER_SUBSECTION_MAX": 2,
-      "VISUALS_PER_SUBSECTION_MAX": 1,
-      "PACK_SOFT_CAP": 12,
-      "PACK_HARD_CAP": 14,
-      "ANNEX_MODE": "ON"
-    },
+  "caps": {
+    "TABLES_PER_SUBSECTION_MAX": 2,
+    "VISUALS_PER_SUBSECTION_MAX": 1,
+    "PACK_SOFT_CAP": 12,
+    "PACK_HARD_CAP": 14,
+    "ANNEX_MODE": "ON"
+  },
 
-    "audience_ratio": {
-      "direksi":  [70,30],
-      "manajer":  [50,50],
-      "teknis":   [20,80],
-      "regulator":[40,60],
-      "end_user": [60,40],
-      "campuran": [50,50]
-    },
+  "audience_ratio": {
+    "direksi":  [70,30],
+    "manajer":  [50,50],
+    "teknis":   [20,80],
+    "regulator":[40,60],
+    "end_user": [60,40],
+    "campuran": [50,50]
+  },
 
-    "i18n": { "bahasa_default": "id_ID", "timezone": "Asia/Jakarta", "date_format": "YYYY-MM-DD" },
-    "network": { "resolver_timeout_sec": 8 }
+  "i18n": { "bahasa_default": "id_ID", "timezone": "Asia/Jakarta", "date_format": "YYYY-MM-DD" },
+
+  "network": {
+    "resolver_timeout_sec": 8,
+    "retries": 1,
+    "retry_backoff_sec": 2
   }
 }
 
@@ -256,7 +263,7 @@ Saat membangun sheet **00_Settings**, isi minimal baris berikut:
 - **05_Trace_Map** konsisten dengan **07_Ref_Library** (RefKey unik).
 - Pre-Flight menampilkan: sumber/versi, budget & pack, caps, candidate doc number (atau disabled), WARN/ERROR/FALLBACK.
 
-# ========================== [INPUT USER] =============================== 
+# [INPUT USER] 
 Contoh singkat:
 {
   "jenis_dokumen": "Usulan Solusi — Harmony HIS",
@@ -274,4 +281,3 @@ Contoh lengkap:
     {"nama":"harmony_core.zip","jenis":"odoo_addons"}
   ]
 }
-
