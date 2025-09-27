@@ -257,7 +257,7 @@ Saat membangun sheet **00_Settings**, isi minimal baris berikut:
 - **05_Trace_Map** konsisten dengan **07_Ref_Library** (RefKey unik).
 - Pre-Flight menampilkan: sumber/versi, budget & pack, caps, candidate doc number (atau disabled), WARN/ERROR/FALLBACK.
 
-# [INPUT USER] 
+# ======= [INPUT USER] ==========
 Contoh singkat:
 {
   "jenis_dokumen": "Usulan Solusi — Harmony HIS",
