@@ -1,60 +1,74 @@
 {
   "name": "docseq-registry",
-  "version": "1.0.0",
-  "description": "Registry pola penomoran dokumen. PX-Planner memakai ini untuk merender NOMOR DOKUMEN KANDIDAT (read-only). Counter tidak diubah oleh PX-Planner.",
+  "version": "1.1.0",
+  "description": "Registry pola penomoran dokumen. PX-Planner merender NOMOR DOKUMEN KANDIDAT secara read-only (tanpa mengubah counter).",
   "key_composition": {
     "compose_key": "{DOC_CODE}-{UNIT}/{YYYY}/{MM}",
     "notes": [
-      "Key di 'counters' disusun dari DOC_CODE, UNIT (dept/prefix), tahun (YYYY), dan bulan (MM) untuk reset bulanan.",
-      "Jika aturan reset = 'yearly', PX-Planner akan mengabaikan {MM} saat membaca/membentuk key."
+      "Key pada 'counters' disusun dari DOC_CODE, UNIT (dept/prefix), tahun (YYYY), dan bulan (MM).",
+      "Jika aturan 'reset' = 'yearly', {MM} diabaikan saat pembentukan key."
     ]
   },
   "rules": {
-    "default": {
-      "pattern": "{DOC_CODE}-{UNIT}-{YYYY}{MM}-{SEQ4}",
-      "reset": "monthly",
-      "seq_width": 4,
-      "padding": "0",
-      "notes": "Default untuk mayoritas dokumen departemen."
-    },
-    "CORP_STD": {
-      "match": { "scope": "CORP", "code": ["POL","STD","SOP","GDE","ESB"] },
+    "CORP_GCG": {
+      "match": { "scope": "CORP", "code": ["POL","STD","SOP","GDE","MAN","WI"] },
       "pattern": "{DOC_CODE}-CORP-{YYYY}{MM}-{SEQ3}",
       "reset": "monthly",
       "seq_width": 3,
-      "padding": "0"
+      "padding": "0",
+      "notes": "Dokumen GCG utama korporat."
+    },
+    "CORP_SUPPORT": {
+      "match": { "scope": "CORP", "code": ["FRM","TMP","RPT","CAP","REG","BCP","SEC","RSK","ESB"] },
+      "pattern": "{DOC_CODE}-CORP-{YYYY}{MM}-{SEQ3}",
+      "reset": "monthly",
+      "seq_width": 3,
+      "padding": "0",
+      "notes": "Dokumen pendukung/komersial korporat (termasuk Executive Solution Brief)."
     },
     "TPSO_ENG": {
       "match": { "scope": "TPSO", "code": ["URS","SRS","SDD","UAT","FGM","BPS","UGD"] },
       "pattern": "{DOC_CODE}-TPSO-{YYYY}{MM}-{SEQ4}",
       "reset": "monthly",
       "seq_width": 4,
-      "padding": "0"
+      "padding": "0",
+      "notes": "Engineering/produk & blueprint teknis."
     },
     "PDC_DELIVERY": {
       "match": { "scope": "PDC", "code": ["SOW","RAID","CUT","STR","PJP"] },
       "pattern": "{DOC_CODE}-PDC-{YYYY}{MM}-{SEQ4}",
       "reset": "monthly",
       "seq_width": 4,
-      "padding": "0"
+      "padding": "0",
+      "notes": "Delivery & project controls."
     },
     "MS_COMMERCIAL": {
       "match": { "scope": "MS", "code": ["SPB","PRC","PRP","RFP","WHP"] },
       "pattern": "{DOC_CODE}-MS-{YYYY}{MM}-{SEQ3}",
       "reset": "monthly",
       "seq_width": 3,
-      "padding": "0"
+      "padding": "0",
+      "notes": "Dokumen komersial/marketing."
     },
     "FICO_OPS": {
       "match": { "scope": "FICO", "code": ["O2C","P2P","MEC","RRP","TAX"] },
       "pattern": "{DOC_CODE}-FICO-{YYYY}{MM}-{SEQ4}",
       "reset": "monthly",
       "seq_width": 4,
-      "padding": "0"
+      "padding": "0",
+      "notes": "Operasi & kebijakan finansial."
+    },
+    "default": {
+      "pattern": "{DOC_CODE}-{UNIT}-{YYYY}{MM}-{SEQ4}",
+      "reset": "monthly",
+      "seq_width": 4,
+      "padding": "0",
+      "notes": "Fallback jika tidak cocok rule spesifik."
     }
   },
   "resolution_order": [
-    "CORP_STD",
+    "CORP_GCG",
+    "CORP_SUPPORT",
     "TPSO_ENG",
     "PDC_DELIVERY",
     "MS_COMMERCIAL",
@@ -64,28 +78,53 @@
   "placeholders": {
     "DOC_CODE": "Kode dari docs/registry/code-types.json (field 'code')",
     "UNIT": "Prefix unit/dept dari docs/registry/prefixes.json (mis. TPSO, PDC, MS, FICO, CORP)",
-    "YYYY": "Tahun 4 digit waktu generasi (zona Asia/Jakarta)",
-    "MM": "Bulan 2 digit waktu generasi (01..12)",
-    "SEQn": "Nomor urut lebar n digit (seq_width) sesuai aturan"
+    "YYYY": "Tahun 4 digit (zona Asia/Jakarta)",
+    "MM": "Bulan 2 digit (01..12)",
+    "SEQn": "Nomor urut lebar n digit sesuai 'seq_width'"
   },
   "counters": {
     "POL-CORP/2025/09": 7,
     "STD-CORP/2025/09": 12,
     "SOP-CORP/2025/09": 4,
+    "GDE-CORP/2025/09": 6,
+    "MAN-CORP/2025/09": 3,
+    "WI-CORP/2025/09": 2,
 
+    "FRM-CORP/2025/09": 15,
+    "TMP-CORP/2025/09": 9,
+    "RPT-CORP/2025/09": 5,
+    "CAP-CORP/2025/09": 2,
+    "REG-CORP/2025/09": 1,
+    "BCP-CORP/2025/09": 1,
+    "SEC-CORP/2025/09": 1,
+    "RSK-CORP/2025/09": 1,
+    "ESB-CORP/2025/09": 4,
+
+    "URS-TPSO/2025/09": 5,
     "SRS-TPSO/2025/09": 11,
     "SDD-TPSO/2025/09": 3,
     "UAT-TPSO/2025/09": 5,
+    "FGM-TPSO/2025/09": 2,
     "BPS-TPSO/2025/09": 2,
+    "UGD-TPSO/2025/09": 1,
 
     "SOW-PDC/2025/09": 8,
     "RAID-PDC/2025/09": 6,
+    "CUT-PDC/2025/09": 4,
+    "STR-PDC/2025/09": 5,
+    "PJP-PDC/2025/09": 3,
 
+    "SPB-MS/2025/09": 4,
     "PRC-MS/2025/09": 9,
     "PRP-MS/2025/09": 2,
+    "RFP-MS/2025/09": 3,
+    "WHP-MS/2025/09": 1,
 
     "O2C-FICO/2025/09": 4,
-    "MEC-FICO/2025/09": 10
+    "P2P-FICO/2025/09": 2,
+    "MEC-FICO/2025/09": 10,
+    "RRP-FICO/2025/09": 1,
+    "TAX-FICO/2025/09": 1
   },
   "examples": [
     {
@@ -93,18 +132,24 @@
       "rule_applied": "TPSO_ENG",
       "current_counter": 11,
       "candidate": "SRS-TPSO-202509-0012",
-      "notes": "PX-Planner hanya merender kandidat. Increment nyata dilakukan di proses terpisah (manual/layanan)."
+      "notes": "PX-Planner hanya merender kandidat. Increment nyata dilakukan oleh proses terpisah."
     },
     {
       "input": { "DOC_CODE": "PRC", "UNIT": "MS", "YYYY": "2025", "MM": "09" },
       "rule_applied": "MS_COMMERCIAL",
       "current_counter": 9,
       "candidate": "PRC-MS-202509-010"
+    },
+    {
+      "input": { "DOC_CODE": "POL", "UNIT": "CORP", "YYYY": "2025", "MM": "09" },
+      "rule_applied": "CORP_GCG",
+      "current_counter": 7,
+      "candidate": "POL-CORP-202509-008"
     }
   ],
   "notes": [
-    "PX-Planner bersifat read-only terhadap registry ini. Tidak ada penulisan balik ke 'counters'.",
-    "Jika tidak ada rule spesifik yang cocok, gunakan 'rules.default'.",
-    "Resolver akan mengombinasikan ini dengan 'code-types.json' dan 'prefixes.json' untuk menentukan DOC_CODE dan UNIT."
+    "Tambahkan key baru di 'counters' untuk bulan berikutnya saat pergantian periode (reset sesuai aturan 'reset').",
+    "Jika Anda menambah kode baru di code-types.json, pastikan rules & counters di sini ikut diperluas."
   ]
 }
+
