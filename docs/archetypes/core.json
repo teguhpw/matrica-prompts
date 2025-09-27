@@ -1,1 +1,141 @@
 
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "Archetype inti lintas departemen untuk perencanaan dokumen. Menyediakan standar default, batas tabel/visual (caps), dan peta kerangka bab per tipe dokumen umum.",
+  "defaults": {
+    "standards": [
+      "IEEE 29148 (Requirements)",
+      "ISO/IEC 25010 (Quality Model)",
+      "ISO 27001 / UU PDP (Bila relevan dengan data pribadi)",
+      "ITIL/COBIT (Opsional; untuk topik operasi TI)"
+    ],
+    "caps": {
+      "TABLES_PER_SUBSECTION_MAX": 2,
+      "VISUALS_PER_SUBSECTION_MAX": 1
+    },
+    "audience_ratio": {
+      "direksi": [70, 30],
+      "manajer": [50, 50],
+      "teknis": [20, 80],
+      "regulator": [40, 60],
+      "end_user": [60, 40],
+      "campuran": [50, 50]
+    }
+  },
+  "archetype_map": {
+    "TEKNIS_UMUM": [
+      "Pendahuluan",
+      "Ruang Lingkup",
+      "Metodologi/Prinsip",
+      "Kebutuhan Fungsional (FR)",
+      "Kebutuhan Non-Fungsional (NFR)",
+      "Data & Integrasi (High-Level)",
+      "Keamanan & Kepatuhan",
+      "Uji & RTM (High-Level)",
+      "Timeline",
+      "Risiko",
+      "Tata Kelola",
+      "Lampiran"
+    ],
+    "FRAMEWORK": [
+      "Prinsip & Ruang Lingkup",
+      "Phase/Gate",
+      "RACI",
+      "Perubahan & Versi",
+      "Metrik & Audit",
+      "Lampiran"
+    ],
+    "SOP_RUNBOOK_TEST": [
+      "Tujuan",
+      "Ruang Lingkup",
+      "Definisi & Istilah",
+      "Peran & Tanggung Jawab",
+      "Proses/Skenario Langkah-demi-Langkah",
+      "Kontrol/Kriteria (QC/QA)",
+      "Dokumen Terkait",
+      "Revisi",
+      "Lampiran"
+    ],
+    "BLUEPRINT_SYSTEM": [
+      "Ringkasan",
+      "Context & Prinsip",
+      "Arsitektur Logis (Layered)",
+      "Integrasi High-Level",
+      "Data/Model High-Level",
+      "Non-Functional Requirements (NFR)",
+      "Keamanan & Privasi",
+      "Deployment & Observability",
+      "Lampiran"
+    ],
+    "BLUEPRINT_BISNIS": [
+      "Ringkasan & KPI",
+      "Kapabilitas Inti",
+      "Proses End-to-End",
+      "RACI",
+      "Kebijakan & Kontrol",
+      "Risiko",
+      "Roadmap",
+      "Lampiran"
+    ],
+    "USER_GUIDE": [
+      "Pendahuluan",
+      "Akses & Peran",
+      "Navigasi/Setup",
+      "Fitur per Menu (Langkah & Contoh)",
+      "FAQ/Troubleshooting",
+      "Lampiran (Glosarium/Indeks)"
+    ],
+    "POLICY_STANDARD_GUIDE": [
+      "Latar Belakang",
+      "Tujuan",
+      "Ruang Lingkup",
+      "Istilah & Definisi",
+      "Prinsip/Aturan",
+      "Prosedur Implementasi",
+      "Kontrol & Monitoring",
+      "Kepatuhan",
+      "Revisi & Pengendalian Dokumen",
+      "Lampiran"
+    ],
+    "TRAINING": [
+      "Halaman Obyektif",
+      "Silabus & Jadwal",
+      "Materi Inti (per Topik)",
+      "Latihan/Self-Check",
+      "Kuis/Capstone",
+      "Lampiran"
+    ]
+  },
+  "hooks_defaults": {
+    "TEKNIS_UMUM": {
+      "tables": ["Daftar Kebutuhan (FR/NFR) Ringkas", "Matriks Risiko (opsional)"],
+      "visuals": ["Diagram Konteks atau Layered (pilih satu)"]
+    },
+    "SOP_RUNBOOK_TEST": {
+      "tables": ["RACI Ringkas", "Checklist Kontrol (opsional)"],
+      "visuals": ["Swimlane Proses"]
+    },
+    "BLUEPRINT_SYSTEM": {
+      "tables": ["Komponen × Layer", "Interface Matrix (opsional)"],
+      "visuals": ["Layered View atau Integrasi HL (pilih satu)"]
+    },
+    "BLUEPRINT_BISNIS": {
+      "tables": ["Kapabilitas × Proses", "RACI (opsional)"],
+      "visuals": ["Peta Proses E2E (HL)"]
+    },
+    "USER_GUIDE": {
+      "tables": ["Tabel Peran × Hak Akses", "Daftar Pintasan (opsional)"],
+      "visuals": ["Cuplikan Navigasi (placeholder)"]
+    },
+    "POLICY_STANDARD_GUIDE": {
+      "tables": ["Tabel Aturan/Kontrol", "Matriks Kepatuhan (opsional)"],
+      "visuals": ["Peta Kepatuhan (HL)"]
+    }
+  },
+  "notes": [
+    "File ini adalah basis umum; overlay departemen (tpso/pdc/ms/fico) akan menambah atau menimpa hook/section.",
+    "PX-Planner/Seed wajib menegakkan caps: ≤2 tabel/subbab (tabel ke-2 dilabeli '(opsional)'), ≤1 visual/subbab.",
+    "Audiense ratio digunakan untuk menyeimbangkan porsi eksekutif vs teknis."
+  ]
+}
