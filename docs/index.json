@@ -41,15 +41,58 @@
     },
     "word_templates": {
       "umum_v1_0": {
-        "docm": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/word/template_umum_v1.0.docm"
+        "docm": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/word/template_umum_v1.0.docm",
+        "kind": "macro_enabled",
+        "lang": "id",
+        "styles_expected": [
+          "Judul 1", "Judul 2", "Judul 3", "Judul 4",
+          "Setara Judul-1", "Setara Judul-2",
+          "Body Text-1", "Body Text-2",
+          "Bullet List-1", "Bullet List-2",
+          "Number List-1", "Number List-2",
+          "Keterangan Tabel", "Keterangan (Gambar)",
+          "Gambar/Tabel", "Script", "Highlight-1", "Normal"
+        ],
+        "mapping_saran": {
+          "h1": "Judul 1",
+          "h2": "Judul 2",
+          "h3": "Judul 3",
+          "h4": "Judul 4",
+          "paragraph": "Body Text-1",
+          "paragraph_after_list": "Body Text-2",
+          "ul_lvl1": "Bullet List-1",
+          "ul_lvl2": "Bullet List-2",
+          "ol_lvl1": "Number List-1",
+          "ol_lvl2": "Number List-2",
+          "table_caption": "Keterangan Tabel",
+          "figure_caption": "Keterangan (Gambar)",
+          "table_body": "Gambar/Tabel",
+          "code_block": "Script",
+          "toc_like": "Setara Judul-1",
+          "appendix_head": "Setara Judul-2"
+        }
       }
     }
   },
 
+  "_defaults": {
+    "resolver_url_primary": "https://teguhpw.github.io/matrica-prompts/index.json",
+    "resolver_url_fallback": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/index.json",
+    "resolver_strategy": "PRIMARY_THEN_FALLBACK",
+    "timeout_ms": 12000
+  },
+
+  "components": {
+    "px_planner": { "min": "2.1", "pref": "2.3" },
+    "px_seed":    { "min": "2.0", "pref": "2.3" },
+    "pp_pack":    { "min": "1.0", "pref": "1.1" },
+    "py_writer":  { "min": "3.0", "pref": "3.0" }
+  },
+
   "notes": [
-    "Semua URL absolut ke RAW agar dapat di-fetch langsung oleh prompt.",
-    "Jika salah satu resource tidak tersedia, PX-Planner/Seed akan memakai fallback embedded.",
-    "GitHub Pages tidak diwajibkan jika memakai RAW.",
-    "Tambahkan checksum opsional di masa depan bila ingin verifikasi integritas (sha256)."
+    "Semua URL menggunakan RAW GitHub agar dapat di-fetch langsung.",
+    "Jika resource gagal diakses, komponen harus jatuh ke fallback embedded.",
+    "Word template .docm dipakai oleh PY-Writer untuk mapping style & macro.",
+    "Pertimbangkan penambahan checksum (sha256) pada rilis berikutnya untuk verifikasi file."
   ]
 }
