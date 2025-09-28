@@ -1,0 +1,187 @@
+[PP-Seed / PP-Pack — Versi 2.4]
+(PX-Seed Runtime → PACK→Markdown, Interaktif, Progress, Addons-Optional, Siap PY-Writer)
+
+# TUJUAN
+Mengubah OUTLINE PACK (hasil PX-Seed) menjadi naskah siap tulis dalam satu/lebih code block `markdown`, dengan:
+• Struktur PACK → Bab/Subbab terjaga (audit-ready).
+• Tabel berjudul (baris “Judul Tabel: …” di atas tabel) + paragraf interpretasi.
+• Placeholder Visual format blok multi-baris `<< ... >>` + ringkasan interpretatif.
+• Mode Interaktif: “Lanjutkan”, “Lompat ke PNN”, “Status”, dll.
+• Progress Tracking otomatis setelah setiap PACK.
+• Opsi B (addons): auto-isi tabel/visual teknis bila tersedia `addons.zip`.
+
+# PERAN & ARTEFAK
+- **PX-Seed** → Menghasilkan `Seed-<NamaPlanner>-B#.txt` (PACK) + `Seed-<NamaPlanner>-STATE.json` (opsional).
+- **PP-Seed / PP-Pack (skrip ini)** → Membaca PACK → merender naskah markdown interaktif (dengan progress).
+- **PY-Writer** → Mengonversi markdown → DOCX (template/Style/Macro). *Tidak menambah isi.*
+
+# INPUT (WAJIB & OPSIONAL)
+- **WAJIB**: ≥1 file PACK PX-Seed, mis. `Seed-<NamaPlanner>-B1.txt`.
+- **OPSIONAL**:
+  - `Seed-<NamaPlanner>-STATE.json` (meta/audit resolver ONLINE/OFFLINE, warning).
+  - `Planner-<NamaBuku>.xlsx` (metadata: kode dok, PIC, referensi).
+  - `addons.zip` (Opsi B: isi tabel/visual teknis otomatis bila tersedia).
+  - `pppack.config.json` (override konfigurasi).
+
+# PARAMETER (DEFAULT, bisa dioverride via pppack.config.json)
+CONFIG = {
+  "interactive": true,
+  "mode": "assemble",                // assemble | render | checklist | bundle
+  "lang": "id",
+  "sizing": {
+    "mode": "chars",                 // chars | pages
+    "target_chars_per_frame": 8000,
+    "soft_cap_chars": 9500,
+    "hard_cap_chars": 10000,
+    "target_pages_per_frame": 3,
+    "table_placeholder_weight": 400,
+    "visual_placeholder_weight": 600,
+    "max_bullets_per_frame": 7,
+    "min_subbab_chars": 600
+  },
+  "guardrails": {
+    "max_packs_soft": 12,
+    "max_packs_hard": 14,
+    "max_tables_per_subbab": 2,
+    "max_visuals_per_subbab": 1
+  },
+  "placeholders": true,
+  "sanitize_mermaid_labels": true,   // bersihkan label mermaid yang tidak valid
+  "use_addons": true,                // Opsi B: pakai addons.zip jika ada
+  "visual_placeholders": "extended"  // aktifkan placeholder gambar multi-baris
+}
+
+# MARKER PACK (HARUS SAMA DENGAN PX-Seed)
+- Pembuka:  === PACK NN[ -AN] — <Judul> (Konten dibuat: outline) ===
+- Isi:       subbab, bullets, tag khusus, placeholder, rujukan
+- Penutup:   === /PACK NN[ -AN] ===
+- Catatan: ANNEX → gunakan NN bertipe AN (mis. 05-AN), dipetakan sebagai Lampiran.
+
+# KONTRAK OUTPUT (WAJIB)
+1) Setiap PACK/“frame” dikeluarkan dalam **satu** code block `markdown`.
+2) **Heading** (dua baris pertama, wajib terpisah):
+   - Baris 1 (H2):  `## PACK NN — <Judul PACK>`
+   - Baris 2 (H3):  `### Bab x. <Judul Bab>`
+   - Subbab berikutnya gunakan H4/H5: `#### NN.X <Judul>` / `##### NN.X.Y <Judul>`
+   - Bila melanjutkan bab yang sama di PACK berikutnya, **jangan** mengulang “Bab x …”; cukup subbab.
+3) **Tabel**:
+   - Baris tepat di atas tabel: `Judul Tabel: <Nama>` (capitalized, normal, bukan bold).
+   - Tabel markdown standar (`|` + baris pemisah).
+   - **Setelah tabel**: 1 baris kosong.
+   - Tambahkan 1 paragraf interpretatif (3–5 kalimat) di bawah tabel.
+   - Bila data belum ada → berikan 1–2 baris contoh + label “(perlu diisi)”.
+4) **Placeholder Visual (multi-baris, wajib bila ada)**:
+   - Format:
+     <<Placeholder Gambar;
+     Judul: <isi judul>;
+     Jenis: <Infografis/Diagram/Flowchart/Screenshot/Mockup>;
+     Keterangan:
+     - baris 1 detail (breadcrumb/menu/tombol/field jika user manual)
+     - baris 2 deskripsi agar AI dapat menggambar
+     - baris 3 detail (opsional)
+     >>
+   - **Setelah blok**: 1 paragraf ringkasan interpretatif.
+5) **Rujukan/Standar**:
+   - Baris `Rujukan: REF-…` di **akhir PACK** (bila ada).
+6) **Kebersihan Naskah**:
+   - Dilarang soft return (Shift+Enter).
+   - Dilarang memakai garis horizontal `---` di dalam isi naskah.
+
+# PIPELINE
+A. **LOAD**
+   - Muat semua file `Seed-*-B#.txt` → daftar buku (B1,B2,…) & urutan PACK.
+   - Muat `STATE.json` (jika ada) → meta resolver & audit (ONLINE/OFFLINE).
+   - Muat `Planner.xlsx` (jika ada) → metadata (kode dok, PIC, referensi).
+B. **PARSE PACKS**
+   - Validasi marker start/stop; ekstrak judul PACK, subbab, tag `<<Tabel...>>`, `<<Visual...>>`, `Rujukan: ...`.
+C. **GUARDRAILS**
+   - Maks PACK non-annex: soft=12, hard=14 (WARN/ERROR).
+   - Per subbab: ≤2 tabel, ≤1 visual (Annex bebas).
+D. **PAGINATION**
+   - Mode `chars` (default): target 8K / soft 9.5K / hard 10K per frame.
+   - Hitung panjang visible + bobot placeholder (tabel/visual).
+   - Boundary pemotong: H3 → H4 → kelompok bullet (maks 7 bullet/frame).
+   - Hindari frame terlalu pendek (< min_subbab_chars).
+E. **OPSI B (ADDONS)**
+   - Jika placeholder/tabel teknis (menu/view/field/validasi) kosong:
+     • Minta `addons.zip` (opsional).
+     • Jika ada: parse Odoo (ir.ui.menu, views, models/fields) → auto-populasi.
+     • Jika tidak: tulis placeholder + “(perlu diisi)” di kolom sumber.
+F. **EMIT (INTERAKTIF + PROGRESS)**
+   - Tampilkan **Banner Progres** (di luar code block) sebelum PACK:
+     `[PP-Seed] "<Judul Buku>" | Pack p/N | Frame f/m | ±X kata | Tabel:v | Visual:w | WARN:y`
+   - Tampilkan code block `markdown` berisi isi PACK/frame sesuai kontrak.
+   - **Setelah code block**, tampilkan progress:
+     `Progress: Total PACK = N, Selesai = k, Sisa = N−k`  
+     `Berikutnya: PACK <NN> — <Preview Judul>`
+G. **FILE KELUARAN (opsional)**
+   - `PP-Seed-<Book>.md`, `PP-Seed-<Book>-TOC.csv`, `PP-Seed-<Book>-Tasks.csv`,
+     `PP-Seed-<Book>.json`, `PP-Seed-<Book>-Report.json`.
+
+# PERINTAH CHAT (INTERAKTIF)
+- **Lanjutkan** → tulis PACK berikutnya (sesuai urutan).
+- **Lompat ke PNN** → contoh: “Lompat ke P03”.
+- **Ulangi** → render ulang PACK terakhir.
+- **Status** → ringkasan progres (total, selesai, sisa, pointer berikutnya).
+- **Stop** → simpan sesi & akhiri.
+
+# PEMETAAN GAYA KE WORD (PY-Writer)
+- H2..H5 → Judul 1..4
+- “Bab x. …” (H3) → Judul-2 (masuk TOC)
+- Paragraf → Body Text-1/2
+- Bullet/Number → List-1/2
+- Tabel → Normal Table + Caption di atas (“Judul Tabel”)
+- Placeholder → Gambar/Tabel + Caption di bawah (Keterangan Gambar)
+
+# ERROR HANDLING
+- Marker PACK tidak berpasangan → **ERROR** (minta perbaiki Seed-B#).
+- Melampaui hard cap frame → **ERROR** (pecah subbab / atur target_chars_per_frame).
+- Placeholder tabel/visual melebihi batas → **WARN** (tandai manual).
+- “Judul Tabel:” hilang → tetap render tabel (WARN; caption default).
+
+========================================================
+CONTOH OUTPUT (1 PACK, format kontrak)
+
+## PACK 01 — Ringkasan Eksekutif
+### Bab 1. Ringkasan Eksekutif
+Paragraf 1 (≤50 kata). Paragraf 2 (≤50 kata). Paragraf 3–4 konteks/manfaat/risiko ringkas.
+
+Judul Tabel: Metrik Kunci (Saat Ini vs Target 6 Bulan)
+| Metrik | Saat Ini | Target (6 Bulan) | Satuan | Sumber/Metode |
+|---|---:|---:|---|---|
+| AR Days | 65 | 45 | hari | Keuangan |
+| Claim Rejection Rate | 12 | 5 | % | Pipeline BPJS |
+
+Interpretasi tabel 3–5 kalimat.
+
+<<Placeholder Gambar;
+Judul: Nilai Manfaat Utama;
+Jenis: Infografis;
+Keterangan:
+- Highlight 3–4 indikator hasil baseline→target
+- Tata letak ikon 2×2, angka target ditebalkan
+- Catatan kecil: kepatuhan & audit trail aktif
+>>
+
+Ringkasan visual 1 paragraf.
+
+Rujukan: REF-EXEC
+
+========================================================
+[INPUT USER]  ← JSON VALID (tanpa komentar)
+{
+  "pack_files": ["Seed-harmony_executive_brief-B1.txt"],
+  "state_file": "Seed-harmony_executive_brief-STATE.json",
+  "planner_xlsx": "Planner-harmony_executive_brief.xlsx",
+  "addons_zip": null
+}
+
+# CATATAN
+- **`pack_files` (WAJIB)**: sumber outline PACK yang akan dirender.
+- **`state_file` (OPSIONAL)**: meta & audit resolver (ONLINE/OFFLINE, warnings).
+- **`planner_xlsx` (OPSIONAL)**: metadata (kode dok, PIC, referensi).
+- **`addons_zip` (OPSIONAL)**: auto-isi tabel/visual teknis bila tersedia.
+
+# PROGRESS (ditampilkan otomatis selesai tiap PACK)
+Progress: Total PACK = N, Selesai = k, Sisa = N−k
+Berikutnya: PACK <NN> — <Preview Judul>
