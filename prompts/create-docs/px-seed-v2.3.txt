@@ -1,0 +1,308 @@
+[PX — Seed v2.3 (Resolver-Hardened) — Ultra-Min | Full | PX-Planner File | Iterasi Cepat (STATE+Catatan) — Multi-Book Aware]
+
+# TUJUAN
+Hasilkan OUTLINE ber-PACK + STATE JSON (round-trip) untuk semua jenis dokumen lintas departemen (TPSO, PDC, MS, FiCo, CORE).
+Mendukung:
+1) Ultra-Min (2 parameter),
+2) Full (lengkap),
+3) PX-Planner JSON via file (1 baris),
+4) Iterasi Cepat (STATE gabungan + catatan_tambahan).
+
+# VERSI
+_px_component: "PX-Seed", px_version: "2.2" (backward-compatible dengan 2.1 & 1.9)_
+
+# OUTPUT & PENAMAAN FILE
+- **STATE (gabungan semua buku)** → `Seed-<NamaPlanner>-STATE.json`
+- **PACKS per buku (untuk PP-Pack)** → `Seed-<NamaPlanner>-B1.txt`, `Seed-<NamaPlanner>-B2.txt`, …
+  (RESET nomor PACK per buku: 01..NN)
+- **Hanya buku yang berubah** saat iterasi yang akan dire-emit TXT-nya (hemat).
+- Jika run single-book (tanpa Planner), gunakan `Seed-<ShortName>.json` & `Seed-<ShortName>.txt`.
+
+# PRINSIP & GUARDRAILS
+- Deterministik, audit-ready, bahasa default Indonesia.
+- ≤2 tabel per subbagian (tabel ke-2 diberi “(opsional)”), ≤1 visual per subbagian.
+- Soft cap PACK: 12; hard cap: 14. Jika berlebih → gabung/mark “(ringkas)” atau buat **Annex** (PACK 99).
+- Tanpa soft-return & tanpa garis horizontal di OUTLINE PACK.
+- STATE selalu valid; PATCH di-merge ketat (override-only, path-spesifik).
+- **Delta Report** wajib bila ada patch/iterasi.
+
+# PARAMETER INTERNAL (JANGAN ditanyakan ke user)
+{
+  "_version": "PX-Seed v2.2 (resolver-hardened r2)",
+  "_defaults": {
+    "bahasa_default": "id",
+    "timezone": "Asia/Jakarta",
+
+    "resolver_url_primary":  "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/index.json",
+    "resolver_url_fallback": "https://teguhpw.github.io/matrica-prompts/docs/index.json",
+    "resolver_strategy":     "PRIMARY_THEN_FALLBACK",
+    "locked_mode": { "enabled": false, "index_url": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/<COMMIT_SHA>/docs/index.json" },
+
+    "network": { "resolver_timeout_sec": 8, "retries": 1, "retry_backoff_sec": 2 },
+    "caps": { "TABLES_PER_SUBSECTION_MAX": 2, "VISUALS_PER_SUBSECTION_MAX": 1, "PACK_SOFT_CAP": 12, "PACK_HARD_CAP": 14 },
+    "audience_ratio": { "eksekutif":[70,30], "manajer":[50,50], "technical":[20,80], "mixed":[50,50] },
+    "standards_default": ["IEEE 29148","ISO/IEC 25010","ISO 27001/UU PDP (bila relevan)"]
+  },
+
+  "archetype_keys_map": {
+    "CORE":["core"], "TPSO":["core","tpso"], "PDC":["core","pdc"], "MS":["core","ms"], "FICO":["core","fico"]
+  },
+
+  "best_practice_overlays": {
+    "URS":{"hooks":{"tables":["Kebutuhan × Persona","Acceptance (opsional)"],"visuals":["Diagram Konteks"]}},
+    "SRS":{"hooks":{"tables":["Interface/Component Matrix","Quality Attribute Scenarios (opsional)"],"visuals":["Logical Layered"]}},
+    "SDD":{"hooks":{"tables":["Interface/Class Matrix"],"visuals":["Sequence/Activity"]}},
+    "UAT":{"hooks":{"tables":["Scenario Sheet","RTM Ringkas (opsional)"],"visuals":["Coverage Diagram"]}},
+    "SOP":{"hooks":{"tables":["RACI (Peran×Proses)","Kontrol Checklist (opsional)"],"visuals":["Swimlane Proses"]}},
+    "BLUEPRINT_SYSTEM":{"hooks":{"tables":["Komponen×Layer","Interface Matrix (opsional)"],"visuals":["Layered/Integration HL (pilih satu)"]}}
+  },
+
+  "EMBEDDED": {
+    "CORE_ARCHETYPE_MIN": {
+      "defaults": {
+        "standards": ["IEEE 29148","ISO/IEC 25010","ISO 27001/UU PDP (bila relevan)"],
+        "caps": {"TABLES_PER_SUBSECTION_MAX":2,"VISUALS_PER_SUBSECTION_MAX":1}
+      },
+      "archetype_map": {
+        "SOP_RUNBOOK_TEST":["Tujuan","Ruang Lingkup","Peran","Proses/Skenario","Kontrol","Dokumen Terkait","Revisi","Lampiran"],
+        "BLUEPRINT_SYSTEM":["Ringkasan","Context & Prinsip","Logical Layered","Integrasi HL","Data HL","NFR","Keamanan","Deploy & Observability","Lampiran"],
+        "TEKNIS_UMUM":["Pendahuluan","Ruang Lingkup","Metodologi/Prinsip","FR/NFR","Data & Integrasi (HL)","Keamanan & Kepatuhan","Uji & RTM (HL)","Timeline","Risiko","Tata Kelola","Lampiran"]
+}}}
+
+# MODA INPUT (PILIH SATU)
+A) ULTRA-MIN (2 parameter):
+{ "jenis_dokumen":"<boleh kode+nama>", "konteks":"<tujuan/penekanan/topik>" }
+
+B) FULL (kontrol lengkap, opsional diberi catatan):
+{
+  "jenis_dokumen":"<...>",
+  "audiens":"eksekutif | manajer | technical | mixed",          // * pilih salah satu
+  "kedalaman":"ringkas | hybrid | teknis",                      // * pilih salah satu
+  "mode_panjang":"SINGKAT | NORMAL | FLEXIBLE",                 // * pilih salah satu
+  "bahasa":"id | en",                                           // * pilih salah satu (opsional)
+  "detail_outline":"L1-2 | L1-3 | topik",                       // * pilih salah satu (opsional)
+  "topik_opsional":"<1–2 paragraf/daftar>",                     // opsional
+  "share_docs":[                                                // * pilih beberapa (opsional)
+    {"nama":"...","jenis":"odoo_addons|org_structure|access_matrix|dataset|diagram|policy|reference","meta":{}}
+  ],
+  "standar_opsional":["TOGAF","ISO 15489","IEEE 29148"],        // * pilih beberapa (opsional)
+  "penjelasan":"<konteks/role singkat>",                        // opsional
+  "departemen_hint":"TPSO | PDC | MS | FICO | CORE",            // * pilih salah satu (opsional)
+  "archetype_hint":"technical | sop | framework | training | blueprint_bisnis | blueprint_system", // * pilih salah satu (opsional)
+  "PATCH_JSON":{ /* override mikro saat iterasi */ }            // opsional
+}
+
+C) PX-PLANNER JSON (via file, 1 baris):
+{ "planner_json_file":"Planner.json" }
+# Multi-book: bila Planner memuat B1..Bn, PX-Seed akan mengekstrak per-book,
+# membangun STATE gabungan, lalu output TXT per-book.
+
+D) ITERASI CEPAT (STATE gabungan + catatan_tambahan):
+{
+  "state_json_file":"Seed-<NamaPlanner>-STATE.json",   // atau "state_json": { ... } inline
+  "catatan_tambahan":"<daftar singkat perubahan yang diinginkan>"
+}
+
+# EKSTRAKSI KODE & DETEKSI (OTOMATIS)
+- Parsing kode dari `jenis_dokumen` (tanpa field `kode`):
+  1) Korporat:  (?P<code>[A-Z]{2,5}-[A-Z_]+-\d{3,})\b
+  2) Umum-awal: ^(?P<code>URS|SRS|SDD|SAD|WI|TC|UG|PP|PX|PY)(?:\b|[—–-])
+- Deteksi departemen & arketipe via heuristik frasa (case-insensitive):
+  TPSO → URS/SRS/SDD/UAT/Fit-Gap/CI-CD/Observability/Blueprint System/User Guide
+  PDC  → SOW/RAID/Cutover/Migration/Status Report/Project Plan
+  MS   → Sales Playbook/Pricing/Packaging/RFP/Proposal/Whitepaper/GTM
+  FICO → O2C/P2P/Month-End/RevRec/Tax/Accounting Policy
+  CORE → Policy/Standard/SOP/Guideline
+- Autosense profil:
+  - /executive brief|usulan solusi|solution brief/ → audiens="eksekutif", kedalaman="hybrid", mode="SINGKAT"
+  - /blueprint/ → audiens="mixed", kedalaman="teknis", mode="FLEXIBLE"
+  - /srs|sdd|uat|fit[- ]?gap/ → audiens="technical", kedalaman="teknis", mode="FLEXIBLE"
+- Nilai eksplisit user (mode Full) selalu menang.
+
+# PROSES (WAJIB)
+1) Normalisasi input → default `bahasa = id` jika kosong.
+2) Bentuk `doc_meta` (kode_dokumen?, nama, departemen, arketipe, audiens/kedalaman/mode hasil autosense/override).
+3) Resolver (ONLINE→FALLBACK) + SELF-TEST v2.3:
+   - Jika `_defaults.locked_mode.enabled = true` → pakai `locked_mode.index_url` (abaikan primary/fallback).
+   - Selain itu, lakukan SELF-TEST (blok di bawah):
+     FETCH_JSON(primary, 8s) → jika gagal/404/parse → TRY fallback → jika tetap gagal → OFFLINE_MODE.
+   - Muat & MERGE: archetypes `core→dept`, lalu overlay best-practice sesuai tipe (URS/SRS/SDD/SOP/BLUEPRINT).
+4) Konsumsi `share_docs` (opsional):
+   - `odoo_addons(.zip)` → seed UI_MAP, ROLE/ACL placeholder, screenshot placeholder (untuk KB/TRN/UAT/SOP).
+   - `org_structure|access_matrix` → ROLE_MAP/RACI (SOP/UAT/KB/TRN).
+   - `dataset|glossary|policy|diagram` → GLOSSARY/PROCESS_STEPS hook.
+5) **Multi-Book (Mode C)**:
+   - Baca Planner.json: bentuk **STATE gabungan** (`books[]` berisi doc_meta/packs_index/audit per-book).
+   - Reset penomoran PACK 01..NN per buku; enforce caps; buat Annex (PACK 99) bila perlu.
+6) Rakit OUTLINE PACK per buku; injeksikan `konteks/topik_opsional` bila ada.
+7) Buat **Outline Table (audit)** per buku.
+8) Susun **STATE gabungan**:
+   { px_component, px_version, source, planner_file_name?, resolver_info, global_meta, books[], audit_global, patch_history[] }.
+9) Terapkan **PATCH**:
+   - Mode Full: honor `PATCH_JSON` (override path-spesifik).
+   - Mode Iterasi (D): turunkan `PATCH_JSON_OTOMATIS` dari `catatan_tambahan` (ops: set/rename_pack/append_subbab/add_visual/add_standard; scope: `all` | `book:Bi` | `books:B1,B3`), merge aman, lalu re-emit bagian yang terdampak.
+10) **Emit Output**:
+   - STATE gabungan → `Seed-<NamaPlanner>-STATE.json`
+   - TXT per buku yang terdampak → `Seed-<NamaPlanner>-B#.txt`
+   - **Delta Report** ringkas (jika ada patch) → tampilkan setelah Outline Table.
+
+# OUTPUT — URUTAN WAJIB (di layar)
+1) **STATE JSON** (gabungan; pretty-printed).
+2) **OUTLINE PACKS** (per buku, dalam satu code block `text` per buku):
+   === PACK 01 — <Judul> (Konten dibuat: outline) ===
+   ...subbab, bullet, <<Tabel ...>>, <<Visual ...>>, Rujukan: ...
+   === /PACK 01 ===
+3) **Outline Table (audit)** per buku — tabel markdown: No | Pack | Judul | Item/Subitem | Tabel | Visual | Catatan
+4) **Delta Report** (jika ada patch).
+
+# ACCEPTANCE CHECKS
+- JSON valid; "px_component":"PX-Seed"; "px_version":"2.2".
+- Bahasa = doc_meta.bahasa (default "id").
+- PACK markers 01..NN konsisten dengan packs_index & Outline Table (per buku).
+- ≤2 tabel/subbagian; ≤1 visual/subbagian (trim + label “(opsional)” jika berlebih).
+- Delta Report hadir bila ada patch; audit memuat ONLINE/OFFLINE, overlay standar aktif, warning fallback/trim.
+
+# ERROR & FALLBACK (Hardening)
+- Resolver total gagal → OFFLINE_MODE; gunakan EMBEDDED.CORE_ARCHETYPE_MIN + best_practice_overlays; catat WARN/ERROR (URL & alasan).
+- File resolver parsial gagal → lanjut merge yang ada; beri WARN per-URL.
+- `share_docs` tak terbaca → lanjut tanpa hook; catat NOTE.
+- Instruksi `catatan_tambahan` ambigu → lakukan perubahan minimum & tandai TODO di Delta Report.
+- Arketipe tak cocok → gunakan “TEKNIS_UMUM”; tandai [AUTO] pada audit.
+
+# KOMPATIBILITAS & MODE LEGACY
+- **Legacy Table Only** (gaya v1.9): output hanya Outline Table bila diminta.
+- Alias input lama:
+  - mode_panjang: `MAX20|FLEXIBLE|SLIDE` → dipetakan ke `SINGKAT|FLEXIBLE|FLEXIBLE`
+  - `kode` (jika dikirim) diabaikan; parser tetap ekstrak dari `jenis_dokumen`.
+
+# === BLOK RESOLVER SELF-TEST (v2.3) — tempel di awal eksekusi (Pre-Flight) ===
+# Tujuan: uji akses index.json (LOCKED → PRIMARY/RAW → FALLBACK/PAGES), bentuk baseURL untuk URL relatif, uji 1 resource contoh, dan log pesan per-URL.
+pseudo:
+  function RESOLVER_SELF_TEST(cfg):
+    logs = []
+    result = {
+      "mode": "AUTO",   # AUTO | LOCKED
+      "source": null,   # RAW | PAGES | SHA
+      "base_url": null,
+      "index_url": null,
+      "index_ok": false,
+      "sample_ok": false,
+      "messages": [],       # untuk STATE.audit_global.warnings
+      "unreachable": []     # daftar url gagal (untuk STATE.audit_global.errors)
+    }
+
+    # 0) LOCKED MODE (opsional, reproducible build)
+    if cfg._defaults.locked_mode.enabled == true:
+      result.mode = "LOCKED"
+      idx_url = cfg._defaults.locked_mode.index_url
+      t0 = now(); idx = FETCH_JSON(idx_url, timeout=cfg._defaults.network.resolver_timeout_sec); dt = elapsed_ms(t0)
+      if "_error" in idx:
+        result.messages.append("ERROR: LOCKED index gagal diakses (" + idx._error + "). OFFLINE_MODE diaktifkan.")
+        result.unreachable.push(idx_url)
+        return { result: result, index: null }  # caller: aktifkan OFFLINE_MODE
+      result.index_ok = true
+      result.source = "SHA"
+      result.index_url = idx_url
+      result.base_url = idx_url.rsplit("/",1)[0] + "/"
+      # Uji 1 resource contoh dari index (archetypes.core.url)
+      core_rel = idx.archetypes.core.url
+      core_url = urljoin(result.base_url, core_rel)
+      core = FETCH_JSON(core_url, timeout=cfg._defaults.network.resolver_timeout_sec)
+      result.sample_ok = ("_error" not in core)
+      if not result.sample_ok:
+        result.messages.append("WARN: Resource contoh gagal diakses: " + core_url)
+        result.unreachable.push(core_url)
+      logs.append({ "url": idx_url, "status":"OK", "ms": dt })
+      return { result: result, index: idx, logs: logs }
+
+    # 1) AUTO MODE: PRIMARY (RAW) → FALLBACK (PAGES) sesuai strategy
+    candidates = [
+      { "label":"RAW",   "url": cfg._defaults.resolver_url_primary },
+      { "label":"PAGES", "url": cfg._defaults.resolver_url_fallback }
+    ] if cfg._defaults.resolver_strategy in ["PRIMARY_THEN_FALLBACK","PRIMARY_ONLY"] else [
+      { "label":"PAGES", "url": cfg._defaults.resolver_url_fallback }
+    ]
+
+    for c in candidates:
+      t0 = now(); idx = FETCH_JSON(c.url, timeout=cfg._defaults.network.resolver_timeout_sec); dt = elapsed_ms(t0)
+      if "_error" in idx:
+        logs.append({ "url": c.url, "status":"FAIL", "ms": dt, "error": idx._error })
+        result.messages.append("WARN: Tidak dapat mengakses " + c.label + " (" + c.url + "): " + idx._error)
+        result.unreachable.push(c.url)
+        if cfg._defaults.resolver_strategy == "PRIMARY_ONLY":
+          break
+        continue
+
+      # Berhasil
+      logs.append({ "url": c.url, "status":"OK", "ms": dt })
+      result.index_ok = true
+      result.source = c.label
+      result.index_url = c.url
+      result.base_url = c.url.rsplit("/",1)[0] + "/"
+
+      # Uji 1 resource contoh
+      core_rel = idx.archetypes.core.url
+      core_url = urljoin(result.base_url, core_rel)
+      core = FETCH_JSON(core_url, timeout=cfg._defaults.network.resolver_timeout_sec)
+      result.sample_ok = ("_error" not in core)
+      if not result.sample_ok:
+        result.messages.append("WARN: Resource contoh gagal diakses: " + core_url)
+        result.unreachable.push(core_url)
+      return { result: result, index: idx, logs: logs }
+
+    # Tidak ada yang berhasil
+    result.messages.append("ERROR: Index GitHub tidak dapat diakses (PRIMARY & FALLBACK). OFFLINE_MODE diaktifkan.")
+    return { result: result, index: null, logs: logs }
+
+# === END SELF-TEST ===
+
+# CATATAN INTEGRASI PRE-FLIGHT KE STATE
+- Masukkan hasil self-test ke `STATE.resolver_info` dan `STATE.audit_global`:
+  "resolver_info": {
+    "Mode": result.mode, "Source": result.source, "BaseURL": result.base_url,
+    "IndexURL": result.index_url, "IndexOK": result.index_ok, "SampleOK": result.sample_ok,
+    "Logs": logs  # daftar per-URL OK/FAIL + durasi
+  }
+- `STATE.audit_global.warnings += result.messages (WARN...)`
+- `STATE.audit_global.errors += ["UNREACHABLE: " + url for url in result.unreachable]`
+- Jika `IndexOK=false` → aktifkan OFFLINE_MODE dan tambahkan:
+  `STATE.audit_global.errors += ["OFFLINE_MODE: menggunakan EMBEDDED.* karena GitHub tidak terjangkau"]`
+
+────────────────────────────────────────────────────────────────────────
+[INPUT USER]
+// Pilih satu blok; hapus sisanya. Untuk opsional, ikuti catatan: * pilih salah satu / * pilih beberapa.
+
+## A) ULTRA-MIN (2 parameter)
+{
+  "jenis_dokumen": "Usulan Solusi — Harmony HIS (Executive Brief)",
+  "konteks": "Ringkas untuk pimpinan: masalah inti, nilai bisnis/ROI, roadmap 3–6 bulan."
+}
+
+## B) FULL
+{
+  "jenis_dokumen": "SRS — Modul Integrasi BPJS Kesehatan",
+  "audiens": "eksekutif | manajer | technical | mixed",          // * pilih salah satu
+  "kedalaman": "ringkas | hybrid | teknis",                      // * pilih salah satu
+  "mode_panjang": "SINGKAT | NORMAL | FLEXIBLE",                 // * pilih salah satu
+  "bahasa": "id | en",                                           // * pilih salah satu (opsional)
+  "detail_outline": "L1-2 | L1-3 | topik",                       // * pilih salah satu (opsional)
+  "topik_opsional": "Scope FR/NFR; interface utama; security & compliance; uji penerimaan.",
+  "share_docs": [
+    {"nama":"bpjs_adapter.zip","jenis":"odoo_addons"},
+    {"nama":"roles.xlsx","jenis":"access_matrix"}
+  ],
+  "standar_opsional": ["TOGAF","ISO 15489","IEEE 29148"],        // * pilih beberapa (opsional)
+  "penjelasan": "Admin=IT Ops; Manager=PM; User=Petugas Klaim.", // opsional
+  "departemen_hint": "TPSO | PDC | MS | FICO | CORE",            // * pilih salah satu (opsional)
+  "archetype_hint": "technical | sop | framework | training | blueprint_bisnis | blueprint_system", // * pilih salah satu (opsional)
+  "PATCH_JSON": { /* override mikro saat iterasi */ }            // opsional
+}
+
+## C) PX-PLANNER JSON (file, 1 baris)
+{ "planner_json_file": "Planner.json" }
+
+## D) ITERASI CEPAT (STATE gabungan + catatan_tambahan)
+{
+  "state_json_file": "Seed-<NamaPlanner>-STATE.json",
+  "catatan_tambahan": "Ubah audiens ke manajer; ganti judul PACK 02 jadi 'Struktur & Prinsip' (B1,B3); tambah visual 'C4-Container' di PACK 05; tambah standar OWASP ASVS; set bahasa=id untuk semua buku."
+}
