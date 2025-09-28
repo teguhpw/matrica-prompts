@@ -39,40 +39,57 @@
         "stylemap": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/excel/stylemaps/px-planner_v2_stylemap.json"
       }
     },
-    "word_templates": {
-      "umum_v1_0": {
-        "docm": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/word/template_umum_v1.0.docm",
-        "kind": "macro_enabled",
-        "lang": "id",
-        "styles_expected": [
-          "Judul 1", "Judul 2", "Judul 3", "Judul 4",
-          "Setara Judul-1", "Setara Judul-2",
-          "Body Text-1", "Body Text-2",
-          "Bullet List-1", "Bullet List-2",
-          "Number List-1", "Number List-2",
-          "Keterangan Tabel", "Keterangan (Gambar)",
-          "Gambar/Tabel", "Script", "Highlight-1", "Normal"
-        ],
-        "mapping_saran": {
-          "h1": "Judul 1",
-          "h2": "Judul 2",
-          "h3": "Judul 3",
-          "h4": "Judul 4",
-          "paragraph": "Body Text-1",
-          "paragraph_after_list": "Body Text-2",
-          "ul_lvl1": "Bullet List-1",
-          "ul_lvl2": "Bullet List-2",
-          "ol_lvl1": "Number List-1",
-          "ol_lvl2": "Number List-2",
-          "table_caption": "Keterangan Tabel",
-          "figure_caption": "Keterangan (Gambar)",
-          "table_body": "Gambar/Tabel",
-          "code_block": "Script",
-          "toc_like": "Setara Judul-1",
-          "appendix_head": "Setara Judul-2"
-        }
+  "word_templates": {
+    "umum_v1_0": {
+      "docm": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/word/template_umum_v1.0.docm",
+      "kind": "macro_enabled",
+      "lang": "id",
+
+      "styles_expected": [
+        "Judul 1", "Judul 2", "Judul 3", "Judul 4",
+        "Setara Judul-1", "Setara Judul-2",
+        "Body Text-1", "Body Text-2",
+        "Bullet List-1", "Bullet List-2",
+        "Number List-1", "Number List-2",
+        "Keterangan Tabel", "Keterangan",
+        "Gambar/Tabel", "Script", "Highlight-1", "Normal"
+      ],
+
+      "mapping_saran": {
+        "h1": "Judul 1",
+        "h2": "Judul 2",
+        "h3": "Judul 3",
+        "h4": "Judul 4",
+        "paragraph": "Body Text-1",
+        "paragraph_after_list": "Body Text-2",
+        "ul_lvl1": "Bullet List-1",
+        "ul_lvl2": "Bullet List-2",
+        "ol_lvl1": "Number List-1",
+        "ol_lvl2": "Number List-2",
+        "table_caption": "Keterangan Tabel",
+        "figure_caption": "Keterangan",
+        "table_body": "Gambar/Tabel",
+        "code_block": "Script",
+        "toc_like": "Setara Judul-1",
+        "appendix_head": "Setara Judul-2"
+      },
+
+      "styles_fallback": {
+        "Judul 4": ["Judul 3", "Judul 2"],
+        "Judul 3": ["Judul 2", "Judul 1"],
+        "Judul 2": ["Judul 1"],
+        "Body Text-2": ["Body Text-1", "Normal"],
+        "Bullet List-2": ["Bullet List-1", "Body Text-1"],
+        "Number List-2": ["Number List-1", "Body Text-1"],
+        "Keterangan": ["Keterangan Tabel", "Body Text-1"],
+        "Keterangan Tabel": ["Keterangan", "Body Text-1"],
+        "Gambar/Tabel": ["Body Text-1", "Normal"],
+        "Script": ["Body Text-1", "Normal"],
+        "Setara Judul-2": ["Setara Judul-1", "Judul 2"],
+        "Setara Judul-1": ["Judul 2", "Judul 1"]
       }
     }
+  }
   },
 
   "_defaults": {
