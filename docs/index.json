@@ -41,7 +41,7 @@
     },
     "word_templates": {
       "umum_v1_0": {
-        "docm": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/word/template_umum_v1.0.docm",
+        "docm": "https://raw.githubusercontent.com/teguhpw/matrica-prompts/main/docs/templates/word/doc_template_umum-v1.0.docx",
         "kind": "macro_enabled",
         "lang": "id",
   
