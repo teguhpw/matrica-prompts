@@ -1,0 +1,140 @@
+[PP-Pack — Versi 2.0 (PACK→Markdown, Interaktif, Addons-Optional, Siap PY-Writer)]
+
+# TUJUAN
+Mengubah OUTLINE PACK (hasil PX-Seed) menjadi naskah siap tulis di dalam satu/lebih code block `markdown`:
+• Menghormati struktur PACK/heading/subbab dari Seed.
+• Membuat tabel Markdown dengan "Judul Tabel:" di atasnya.
+• Membuat placeholder visual baru `<<Placeholder Gambar; ... >>` (judul, jenis, keterangan multi-baris).
+• Mendukung Mode Interaktif: perintah “Lanjutkan” memicu emisi frame berikutnya.
+• Opsi B: bila data teknis (menu/view/field/validasi) belum tersedia, PP-Pack boleh meminta addons.zip untuk mengisi placeholder tabel/visual secara otomatis.
+
+# KOMPONEN & PERAN
+- PX-Seed → memberi file `Seed-<NamaPlanner>-B#.txt` (PACKS) + `Seed-<NamaPlanner>-STATE.json` (ops).
+- PP-Pack (skrip ini) → baca PACKS → keluarkan naskah markdown, interaktif, pagination aman.
+- PY-Writer → konversi markdown ke DOCX menggunakan template Word (style & macro).
+
+# INPUT (WAJIB & OPSIONAL)
+- WAJIB: ≥1 file PACK dari PX-Seed (mis.: `Seed-CanonDelta-B1.txt`, `Seed-CanonDelta-B2.txt`).
+- OPSIONAL:
+  • `Seed-<NamaPlanner>-STATE.json` untuk meta/rujukan/audit resolver.
+  • `Planner-<NamaBuku>.xlsx` untuk meta (kode dok, PIC, referensi).
+  • `addons.zip` (Opsi B). Dipakai bila perlu isi data menu/view/field/validasi.
+  • `pppack.config.json` (override parameter di bawah).
+
+# PARAMETER (DEFAULT DAPAT DIOVERRIDE)
+CONFIG = {
+  "interactive": true,
+  "mode": "assemble",         // assemble | render | checklist | bundle
+  "lang": "id",
+  "sizing": {
+    "mode": "chars",          // chars | pages
+    "target_chars_per_frame": 8000,
+    "soft_cap_chars": 9500,
+    "hard_cap_chars": 10000,
+    "target_pages_per_frame": 3,
+    "table_placeholder_weight": 400,
+    "visual_placeholder_weight": 600,
+    "max_bullets_per_frame": 7,
+    "min_subbab_chars": 600
+  },
+  "guardrails": {
+    "max_packs_soft": 12,
+    "max_packs_hard": 14,
+    "max_tables_per_subbab": 2,
+    "max_visuals_per_subbab": 1
+  },
+  "placeholders": true,
+  "sanitize_mermaid_labels": true,
+  "use_addons": true,         // Opsi B: izinkan baca addons.zip bila data teknis kosong
+  "visual_placeholders": "extended" // format multi-baris detail
+}
+
+# MARKER PACK (HARUS SESUAI)
+- Pembuka:
+  === PACK NN[ -AN] — <Judul> (Konten dibuat: outline) ===
+- Isi: subbab, bullets, tag khusus, placeholder, rujukan.
+- Penutup:
+  === /PACK NN[ -AN] ===
+- ANNEX gunakan kode AN-01, AN-02 → dipetakan ke Lampiran A, B, ...
+
+# FORMAT KELUARAN (KONTRAK WAJIB)
+1) SELURUH isi PACK (atau frame) berada di satu code block `markdown`.
+2) Heading:
+   • H2 → Judul PACK: "## NN. <Judul>".
+   • H3 → Subbab: "### NN.X <Judul Subbab>".
+   • H4 → Sub-subbab: "#### NN.X.Y <Judul>".
+   • Jika subbab di-split: tambahkan suffix "(lanjutan-1/2/…)" pada H3/H4.
+3) Tabel:
+   • Wajib ada baris tepat di atas tabel: "Judul Tabel: <Nama>" (capitalized, normal, bukan bold).
+   • Tabel markdown standar (baris pemisah `|---|---|`).
+   • Setelah tabel, tulis 1 paragraf narasi interpretatif (tanpa frasa “Penjelasan interpretatif”).
+4) Visual Placeholder (format baru):
+   • Satu blok multi-baris, diawali `<<` dan diakhiri `>>`:
+     <<Placeholder Gambar;
+     Judul: <isi judul>;
+     Jenis: <Infografis/Diagram/Flowchart/Screenshot/Mockup>;
+     Keterangan:
+     - baris 1 detail (breadcrumb/menu/tombol/field)
+     - baris 2 detail
+     - baris 3 detail (opsional)
+     >>
+   • Setelah placeholder, tulis 1 paragraf ringkasan interpretatif.
+5) Rujukan/Standar:
+   • Baris "Rujukan: ..." di akhir PACK bila ada.
+6) DILARANG soft return & garis horizontal (---) di dalam isi naskah.
+
+# LOGIKA & PIPELINE
+A. LOAD
+   - Muat semua file Seed-B#.txt → bentuk daftar buku (B1,B2,...), urut PACK.
+   - Muat STATE.json (jika ada) → meta & audit resolver.
+   - Muat Planner.xlsx (jika ada) → metadata (opsional).
+B. PARSE PACKS
+   - Validasi marker start/stop, ambil judul PACK, daftar subbab & tag khusus:
+     <<Tabel ...>>, <<Visual ...>>, "Rujukan: ...".
+C. GUARDRAILS
+   - Maks packs (non-annex): soft=12, hard=14 (WARN/ERROR).
+   - Per subbab: ≤2 tabel, ≤1 visual (Annex bebas).
+D. SIZING & PAGINATION
+   - Mode `chars` (default): target 8K, soft 9.5K, hard 10K.
+   - Hitung panjang visible + bobot placeholder (tabel/visual).
+   - Boundary pemotong: H3 → H4 → kelompok bullet (maks 7 bullet/frame).
+   - Hindari frame < min_subbab_chars; gabung mundur bila aman.
+E. OPSI B (ADDONS OPTIONAL)
+   - Saat menemukan placeholder/tabel teknis (menu/view/fields/validasi) dan STATE kosong:
+     • Minta user unggah `addons.zip` (opsional).
+     • Jika diunggah: parse modul Odoo (ir.ui.menu, views, models/fields) → isi otomatis kolom/placeholder.
+     • Jika tidak: tulis placeholder dengan tag "(perlu diisi)" pada kolom sumber.
+F. EMIT
+   - Mode interaktif: satu perintah "Lanjutkan" → emit 1 frame berikutnya.
+   - Di setiap emisi:
+     • Tampilkan Progress Banner (di luar code block):
+       [PP-Pack] Book Bk — "Judul" | Pack P/Total | Frame f/n | ±X kata | Tabel:v | Visual:w | WARN:y
+     • Lalu code block `markdown` berisi isi PACK/frame sesuai kontrak.
+   - Selain interaktif, tetap tulis berkas kumulatif per buku:
+     PP-Pack-<Book>.md, -TOC.csv, -Tasks.csv, .json, -Report.json
+
+# PERINTAH INTERAKTIF (chat)
+- Lanjutkan → emit frame berikutnya (pack aktif).
+- Ulangi → emit ulang frame terakhir (menimpa segmen di file kumulatif).
+- Lompat ke PNN → pindah pointer ke PACK NN (frame 1).
+- Status → ringkasan progres (per buku).
+- Ringkas Buku → daftar isi & statistik buku aktif.
+- Buku Berikutnya → lanjut ke buku Bk+1.
+- Stop → simpan session & akhiri.
+
+# MAP KE WORD (untuk PY-Writer)
+- H2..H4 → Judul 1..4
+- Paragraf → Body Text-1
+- Paragraf sesudah list → Body Text-2
+- Bullet lvl1/lvl2 → Bullet List-1/2
+- Number lvl1/lvl2 → Number List-1/2
+- Tabel → Gambar/Tabel (atau Normal Table) + Caption di atas: Keterangan Tabel
+- Gambar (placeholder) → Gambar/Tabel + Caption di bawah: Keterangan (Gambar)
+- TOC/Lampiran/Identitas → Setara Judul-1/2
+- Code block → Script
+
+# ERROR HANDLING
+- Marker tidak berpasangan → ERROR (minta perbaiki Seed-B#).
+- PACK melebihi hard cap frame → ERROR (minta pecah subbab/tingkatkan target_chars_per_frame).
+- Tag tabel/visual melebihi batas per subbab → WARN (kelebihan ditandai placeholder manual).
+- Ketiadaan "Judul Tabel:" → tetap render tabel (WARN, tanpa caption).
